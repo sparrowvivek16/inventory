@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Login from './components/login';
+//import Login from './components/login';
+import Profile from './components/profile';
 import firebase from './config/fbfsConfig';
 
 const auth = firebase.auth();
@@ -18,7 +19,8 @@ class App extends Component{
       return (
         <BrowserRouter>
         <div className="Section">
-        <Login checkUser={this.checkUser} snack={this.snack} />             
+        {/* <Login checkUser={this.checkUser} snack={this.snack} /> */}
+        <Profile />
         </div>
         </BrowserRouter>
       );  
