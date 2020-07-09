@@ -1,43 +1,22 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from './components/login';
-import firebase from './config/fbfsConfig';
+import Dashboard from './components/dashboard';
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-class App extends Component{
-
-  checkUser(data){    
-    auth.signInWithEmailAndPassword(data.user,data.password).then( credt => {
-      console.log(credt.user,'yes');
-    }).catch(err=> console.log(err));
-  }
+class App extends Component{  
 
   render(){
       return (
         <BrowserRouter>
-        <div className="Section">
-        <Login checkUser={this.checkUser} snack={this.snack} />             
+        <div className="Section">        
+        <Switch>
+          <Route exact path='/login' component={Login}/>
+          <Route exact path='/' component={Dashboard}/>          
+        </Switch> 
         </div>
         </BrowserRouter>
       );  
     }
-
-  /* Fuctional tools 
-  ------------------
-  Below functions are for changing or interacting with UI only.
-  */
-  snack(message){
-      const snackbar = document.createElement('div');
-      snackbar.classList.add('snackbar');
-      document.querySelector('body').appendChild(snackbar);
-      snackbar.textContent = message;
-      snackbar.classList.add('active');
-      setTimeout(() => {
-        snackbar.classList.remove('active');
-      }, 6000);
-  }  
 }
 
 export default App;

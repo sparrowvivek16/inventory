@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
-
+import AlertService from '../common/service/AlertService';
+import firebase from '../config/fbfsConfig';
+import StorageService from '../common/service/StorageService';
 
 class Login extends Component{
+    constructor(props){
+        super(props);
+        this.alerts = new AlertService();
+        this.storage = new StorageService();
+        this.auth = firebase.auth();
+        this.db = firebase.firestore();
+    }
     state ={
         user : null,
         password : null        
@@ -10,16 +19,25 @@ class Login extends Component{
         this.setState({
             [e.target.id] : e.target.value
         });
-    }
+    }   
+
     submits = (e) =>{
         e.preventDefault();
         if(this.state.user && this.state.password !== null){           
-            this.props.checkUser(this.state);
+            this.auth.signInWithEmailAndPassword(this.state.user,this.state.password).then( credt => {
+                console.log(credt.user);       
+                this.storage.setUID(credt.user.uid);
+                this.storage.setToken(credt.user.l);
+                this.props.history.push('/');
+              }).catch(err=> this.alerts.snack(err.message,'red'));
         }else{
-            this.props.snack('All fields are required.');
+            this.alerts.snack('All fields are required.','red');            
         }
     }
     render(){
+        if(this.storage.getToken()!=null){
+            this.props.history.push('/');
+        }
         const loginForm = (
         <div className="col s6 m7">
            
