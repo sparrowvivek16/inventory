@@ -54,7 +54,7 @@ class Login extends Component{
                         
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
                             <div className="card-header justify-content-center">
-                            <h1 className="font-weight-light my-4 text-center">Inventory Management System</h1>
+                            <h1 className="font-weight-light my-4 text-center">IMS by Radi and Sparrow</h1>
                                 </div>
                             <div className="card-body">
                             <h3 className="font-weight-light my-4">Login</h3>
