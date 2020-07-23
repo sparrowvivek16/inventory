@@ -7,7 +7,7 @@ const loading = () => <div className=""></div>;
 const DashboardLayout = React.lazy(() => import('./container/DashboardLayout'));
 
 // Pages
-const Login = React.lazy(() => import('./components/login'));
+const Login = React.lazy(() => import('./components/login'));  
 
 class App extends Component{  
 
