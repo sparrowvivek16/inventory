@@ -19,16 +19,35 @@ class Dashboard extends Component{
             this.props.history.push('/login');
         }).catch(err => console.log(err));        
     }
-
-    render(){
+    componentDidMount(){
         if(this.storage.getToken()==null){
             this.props.history.push('/login');
         }
+    }
+
+    render(){        
         return (
-            <div className="container">
-                <h2>this is dashboard</h2>
-                <button className="btn grey" onClick={this.logout}>logout</button>
-            </div>
+            <div id="layoutSidenav_content">
+                <div className="container header">
+                        <div className="row">
+                            <div className="col-xxl-4 col-xl-12 mb-4">
+                                <div className="card h-100">
+                                    <div className="card-body h-100 d-flex flex-column justify-content-center py-5 py-xl-4">
+                                        <div className="row align-items-center">
+                                            <div className="col-xl-8 col-xxl-12">
+                                                <div className="text-center px-4 mb-4 mb-xl-0 mb-xxl-4">
+                                                    <h1 className="text-primary">this is dashboard</h1>
+                                                    <button className="btn btn-dark" type="button" onClick={this.logout}>logout</button>
+                                                </div>
+                                            </div>
+                                            <div className="col-xl-4 col-xxl-12 text-center"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         );
     }
 }
