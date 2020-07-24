@@ -3,6 +3,13 @@ import React, { Component } from 'react';
 
 class DashboardHeader extends Component{
 
+    logout = () =>{
+        this.auth.signOut().then(() =>{
+            this.storage.logOut();
+            this.props.history.push('/login');
+        }).catch(err => console.log(err));        
+    }
+
     //open or collapse sidebar
     sidebarClick = (e) =>{
         e.preventDefault();
@@ -48,7 +55,7 @@ class DashboardHeader extends Component{
                             <div className="dropdown-item-icon"><i data-feather="settings"></i></div>
                             Account
                         </a>
-                        <a className="dropdown-item" href="#!">
+                        <a className="dropdown-item" href="#!" onClick={this.logout}>
                             <div className="dropdown-item-icon"><i data-feather="log-out"></i></div>
                             Logout
                         </a>

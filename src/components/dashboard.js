@@ -13,12 +13,7 @@ class Dashboard extends Component{
         this.db = firebase.firestore();
     }
 
-    logout = () =>{
-        this.auth.signOut().then(() =>{
-            this.storage.logOut();
-            this.props.history.push('/login');
-        }).catch(err => console.log(err));        
-    }
+   
     componentDidMount(){
         if(this.storage.getToken()==null){
             this.props.history.push('/login');
@@ -27,27 +22,21 @@ class Dashboard extends Component{
 
     render(){        
         return (
-            <div id="layoutSidenav_content">
-                <div className="container header">
-                        <div className="row">
-                            <div className="col-xxl-4 col-xl-12 mb-4">
-                                <div className="card h-100">
-                                    <div className="card-body h-100 d-flex flex-column justify-content-center py-5 py-xl-4">
-                                        <div className="row align-items-center">
-                                            <div className="col-xl-8 col-xxl-12">
-                                                <div className="text-center px-4 mb-4 mb-xl-0 mb-xxl-4">
-                                                    <h1 className="text-primary">this is dashboard</h1>
-                                                    <button className="btn btn-dark" type="button" onClick={this.logout}>logout</button>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-4 col-xxl-12 text-center"></div>
-                                        </div>
+                 <header className="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+                        <div className="container">
+                            <div className="page-header-content pt-4">
+                                <div className="row align-items-center justify-content-between">
+                                    <div className="col-auto mt-4">
+                                        <h1 className="page-header-title">
+                                            <div className="page-header-icon"><i data-feather="activity"></i></div>
+                                            Dashboard
+                                        </h1>
+                                        <div className="page-header-subtitle">Manage your multiple warehouse all at one place.</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </header>
         );
     }
 }

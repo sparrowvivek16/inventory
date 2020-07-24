@@ -11,6 +11,7 @@ class DashboardLayout extends Component{
 
     // Click to collapse responsive sidebar
     overlayClick(){
+        // eslint-disable-next-line no-unused-vars
         const BOOTSTRAP_LG_WIDTH = 992;
         if (window.innerWidth >= 992) {
         return;
