@@ -7,9 +7,20 @@ const DashboardSidebar = React.lazy(() => import('./DashboardSidebar'));
 const DashboardFooter = React.lazy(() => import('./DashboardFooter'));
 const DashboardHeader = React.lazy(() => import('./DashboardHeader'));
 
-
-
 class DashboardLayout extends Component{
+
+    // Click to collapse responsive sidebar
+    overlayClick(){
+        const BOOTSTRAP_LG_WIDTH = 992;
+        if (window.innerWidth >= 992) {
+        return;
+        }
+        let overlayContent = document.querySelector("body");
+        if(overlayContent.classList.contains('sidenav-toggled')){
+            overlayContent.classList.toggle('sidenav-toggled');
+        }
+    }
+
     render() {
 
         return (
@@ -17,7 +28,7 @@ class DashboardLayout extends Component{
         <DashboardHeader history={this.props.history} />
         <div id="layoutSidenav">
             <DashboardSidebar history={this.props.history} />
-            <div id="layoutSidenav_content">
+            <div id="layoutSidenav_content" onClick={this.overlayClick}>
             { <main className="main">
                 {/* <Container fluid> */}
                         <Switch>

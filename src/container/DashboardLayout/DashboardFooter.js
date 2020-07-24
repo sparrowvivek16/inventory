@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import feather from 'feather-icons';
 
-class DashboardFooter extends Component{
+// Activate Feather icons
+feather.replace();
 
+class DashboardFooter extends Component{    
     render(){
         return (
             <footer className="footer mt-auto footer-light">

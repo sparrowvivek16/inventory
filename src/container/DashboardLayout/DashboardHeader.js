@@ -2,11 +2,18 @@ import React, { Component } from 'react';
 
 
 class DashboardHeader extends Component{
+
+    //open or collapse sidebar
+    sidebarClick = (e) =>{
+        e.preventDefault();
+        document.querySelector("body").classList.toggle("sidenav-toggled");
+    }
+
     render(){
         return (
             <nav className="topnav navbar navbar-expand shadow navbar-light bg-white" id="sidenavAccordion">
-            <a className="navbar-brand" href="index.html">IMS</a>
-            <button className="btn btn-icon btn-transparent-dark order-1 order-lg-0 mr-lg-2" id="sidebarToggle" href="#"><i data-feather="menu"></i></button>
+            <a className="navbar-brand" href="#!">IMS</a>
+            <button className="btn btn-icon btn-transparent-dark order-1 order-lg-0 mr-lg-2" id="sidebarToggle" href="#" onClick={this.sidebarClick}><i data-feather="menu"></i></button>
            
             <ul className="navbar-nav align-items-center ml-auto">
                 <li className="nav-item dropdown no-caret mr-3 dropdown-notifications">
