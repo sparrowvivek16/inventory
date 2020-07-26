@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
-import firebase from '../config/fbfsConfig';
+import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
 
 class Login extends Component{

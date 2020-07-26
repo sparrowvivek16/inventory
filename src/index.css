@@ -20501,13 +20501,13 @@ pre[class*=language-] {
 
 /* User UI style  Start*/
 .snackbar{
-  width: 200px;
+  width: 300px;
   padding: 20px;
   position: fixed;
-  left: 50%;
+  left: 85%;
   margin-left: -120px;
   top: 0;
-  border-radius: 0 0 5px 5px;
+  border-radius: 5px;
   box-shadow: 1px 3px 5px rgba(0,0,0,0.2);
   background: #ff6565;
   text-align: center;
@@ -20516,13 +20516,21 @@ pre[class*=language-] {
   transition: all 0.2s;
 }
 .snackbar.active{
-  margin-top: 0;
+  margin-top: 10px;
 }
 
 .header{
   margin-top: 70px;
 }
 
-.white{
-  color: white;
+.red{
+  background: red;
+}
+
+.green{
+  background: green;
+}
+
+.blue{
+  background: blue;
 }
