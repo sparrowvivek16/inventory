@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/fbfsConfig';
 import StorageService from '../common/service/StorageService';
+import { validations } from '../common/validations';
+import feather from 'feather-icons';
 
 class Newitem extends Component{
     constructor(props){
@@ -11,32 +13,33 @@ class Newitem extends Component{
         this.auth = firebase.auth();
         this.db = firebase.firestore();
     }
-    state ={
-        particulars : null,
-        category : null,
-        subcategory : null,
-        qty : null,
-        skuID : null,
-        expdate : null,
-        barcode : null,
-        manufactureprice : null,
-        mrp : null,
-        tax : null,
-        hsncode : null,
-        remarks : null
+    componentDidMount(){
+        feather.replace();
+    }
+    state = {     
+        item: {}
     }
     getFormData = (e) =>{
-        this.setState({
-            [e.target.id] : e.target.value
+        this.setState({ 
+            item: {
+                ...this.state.item,
+                [e.target.id] : e.target.value
+            }
         });       
     }
     addNew = (e) =>{
-        e.preventDefault();
-        console.log(this.state);
-        document.getElementById('add-new-item').reset();
+        e.preventDefault();       
+        if(validations.addItemValidation(this.state.item)){
+          
+            this.setState({ item: {} });
+            document.getElementById('add-new-item').reset();
+        }
+               
     }
+    
 
     render(){
+        
         return(
             <>
             <header className="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
@@ -70,19 +73,40 @@ class Newitem extends Component{
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="category">Category</label>
-                                                    <input className="form-control" id="category" type="text" placeholder="eg: grain" onChange={this.getFormData} />
+                                                    <select className="form-control" id="category"placeholder="pick a category" onChange={this.getFormData}>                                                        
+                                                        <option value="0">--select--</option>
+                                                        <option value="grain">Grain</option>
+                                                        <option value="pluses">Pluses</option>
+                                                        <option value="pickles">Pickles</option>                                                        
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="subcategory">Sub Category</label>
-                                                    <input className="form-control" id="subcategory" type="text" placeholder="eg: rice" onChange={this.getFormData} />
+                                                    <select className="form-control" id="subcategory" onChange={this.getFormData}>
+                                                        <option value="0">--select--</option>
+                                                        <option value="grain">rice</option>
+                                                        <option value="pluses">wheat</option>
+                                                        <option value="pickles">oat</option>                                                        
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="qty">Quantity</label>
                                                     <input className="form-control" id="qty" type="number" placeholder="eg: 10" onChange={this.getFormData} />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="unit">Unit</label>
+                                                    <select className="form-control" id="unit" onChange={this.getFormData}>
+                                                        <option value="0">--select--</option>
+                                                        <option value="grain">KG</option>
+                                                        <option value="pluses">CC</option>
+                                                        <option value="pickles">Ton</option>                                                        
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
@@ -120,11 +144,10 @@ class Newitem extends Component{
                                                 <div className="form-group">
                                                     <label htmlFor="tax">Tax(s)</label>
                                                     <select className="form-control" id="tax" onChange={this.getFormData}>
+                                                        <option value="0">--select--</option>
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
+                                                        <option value="3">3</option>                                                       
                                                     </select>
                                                 </div>
                                             </div>
