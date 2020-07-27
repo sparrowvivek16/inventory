@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
-import { validation } from '../common/service/Validation/validation';
+import { validation } from '../common/Validation/validation';
 
 class Register extends Component{
     constructor(props) {
@@ -14,7 +14,6 @@ class Register extends Component{
                 address: '',
                 phoneNumber: '',
                 email: '',
-                userName: '',
                 password: '',
                 confirmPassword: '',
                 role:''
@@ -55,7 +54,7 @@ class Register extends Component{
                      address:  user.address,
                      phoneNumber:  user.phoneNumber,
                      email:  user.email,
-                     userName:  user.userName,
+                     role:  user.role,
                  }).then((data) => {
                     console.log(data);
                      this.props.history.push('/dashboard');
@@ -130,9 +129,13 @@ class Register extends Component{
                                             <input id="email" type="text" name="email" value={user.email} className="form-control" onChange={this.credentials} />
                                         </div> </div>
                                         <div className="col-md-6">
-                                        <div className="form-group">
-                                            <label className="small mb-1" htmlFor="inputUserName">User Name</label>
-                                            <input id="userName" type="text" name="userName" value={user.userName} className="form-control" onChange={this.credentials} />
+                                        <div className="form-group">       
+                                        <label className="small mb-1" htmlFor="inputRole">Role</label>                                 
+                                        <select onChange={this.credentials}  value={user.role} name="role" className="form-control">
+                                        <option value="-1">--Select--</option>
+                                        <option >Staff</option>
+                                        <option >User</option>
+                                                </select>                
                                         </div>
                                         </div>
                                         </div>
@@ -150,16 +153,6 @@ class Register extends Component{
                                         </div>
                                         </div>
                                         </div>
-                                        <div className="col-md-6">
-                                        <div className="form-group">       
-                                        <label className="small mb-1" htmlFor="inputRole">Role</label>                                 
-                                        <select onChange={this.credentials}  value={user.role} name="role" className="form-control">
-                                        <option value="-1">--Select--</option>
-                                        <option >Staff</option>
-                                        <option >User</option>
-                                                </select>                
-                                        </div>
-                                        </div>
                                         <div className="form-group mt-4 mb-0"> <button className="btn btn-primary btn-block" href="auth-login-basic.html">Create Account</button></div>
                                         
                                     </form>
@@ -172,20 +165,6 @@ class Register extends Component{
                     </div>
                 </div>
             </main>            
-            </div>
-            <div id="layoutAuthentication_footer">
-            <footer className="footer mt-auto footer-dark">
-                <div className="container-fluid">
-                    <div className="row">
-                        <div className="col-md-6 small">Copyright &#xA9; Radi & Sparrow 2020</div>
-                        <div className="col-md-6 text-md-right small">
-                            <a href="#!">Privacy Policy</a>
-                            &#xB7;
-                            <a href="#!">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
             </div>
             </div>
         );
