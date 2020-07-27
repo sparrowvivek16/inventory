@@ -57,12 +57,27 @@ class Register extends Component{
                      role:  user.role,
                  }).then((data) => {
                     console.log(data);
-                     this.props.history.push('/dashboard');
+                    this.alerts.snack('Successfully Registered','green')
+                    this.resetInput(user);
                  }).catch((error) => {
                     this.alerts.snack(error.message,'red')
                 })
     }
 }
+   resetInput(user){
+    this.setState({  
+        user: {
+            firstName: '',
+            lastName:'',
+            address: '',
+            phoneNumber: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            role:''
+        }});
+    }
+
 
         goBack(){
             this.props.history.goBack()
