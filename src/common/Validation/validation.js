@@ -54,7 +54,10 @@ function registerValidation(values) {
     else if (values.password !== values.confirmPassword) {
         alerts.snack("Password and Confirm Password don't match.","red");
     }
-    return registerValidation;
+    else{
+        return true;
+    }
+    
 }
 
 function ValidateEmail(mail) {

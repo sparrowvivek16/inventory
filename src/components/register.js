@@ -45,23 +45,23 @@ class Register extends Component{
         if(validation.registerValidation(user)){
             this.auth.createUserWithEmailAndPassword(user.email,user.password).then((data)=>{
            console.log(data);
+           this.db.collection("users").add({
+            firstName: user.firstName,
+            lastName:  user.lastName,
+            address:  user.address,
+            phoneNumber:  user.phoneNumber,
+            email:  user.email,
+            role:  user.role,
+        }).then((data) => {
+           console.log(data);
+           this.alerts.snack('Successfully Registered','green')
+           this.resetInput(user);
+        }).catch((error) => {
+           this.alerts.snack(error.message,'red')
+       })
             }).catch((error) => {
                 this.alerts.snack(error.message,'red')
-            })
-                this.db.collection("users").add({
-                     firstName: user.firstName,
-                     lastName:  user.lastName,
-                     address:  user.address,
-                     phoneNumber:  user.phoneNumber,
-                     email:  user.email,
-                     role:  user.role,
-                 }).then((data) => {
-                    console.log(data);
-                    this.alerts.snack('Successfully Registered','green')
-                    this.resetInput(user);
-                 }).catch((error) => {
-                    this.alerts.snack(error.message,'red')
-                })
+            })           
     }
 }
    resetInput(user){
