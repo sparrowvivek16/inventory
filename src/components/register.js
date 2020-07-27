@@ -18,11 +18,11 @@ class Register extends Component{
                 confirmPassword: '',
                 role:''
             },
- 
+            userList:[],
+
         };
         this.credentials = this.credentials.bind(this);
         this.submits = this.submits.bind(this);
-        this.goBack = this.goBack.bind(this);
         this.auth = firebase.auth();
         this.db = firebase.firestore();
         this.alerts = new AlertService();
@@ -78,9 +78,21 @@ class Register extends Component{
         }});
     }
 
+        getAllUsers(){
+            const {userList} = this.state;
+            this.db.collection("users")
+            .get()
+            .then(querySnapshot => {
+              const data = querySnapshot.docs.map(doc => doc.data());
+              console.log(data);
+              this.setState({userList:data})
+              console.log(userList);
+            });
+            }
 
-        goBack(){
-            this.props.history.goBack()
+
+        componentDidMount(){
+            this.getAllUsers();
         }
 
     render() {
@@ -179,6 +191,42 @@ class Register extends Component{
                         </div>
                     </div>
                 </div>
+                        <div class="card mb-4">
+                            <div class="card-header">User List</div>
+                            <div class="card-body">
+                                <div class="datatable">
+                                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Address</th>
+                                                <th>Phone Number</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Tiger Nixon</td>
+                                                <td>System Architect</td>
+                                                <td>Edinburgh</td>
+                                                <td>61</td>
+                                                <td>2011/04/25</td>
+                                                <td>$320,800</td>
+                                                <td><div class="badge badge-primary badge-pill">Full-time</div></td>
+                                                <td>
+                                                    <button class="btn btn-datatable btn-icon btn-transparent-dark mr-2"><i data-feather="more-vertical"></i></button>
+                                                    <button class="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
             </main>            
             </div>
             </div>
