@@ -1,4 +1,4 @@
-import AlertService from '../service/AlertService';
+import AlertService from './service/AlertService';
 
 const alerts = new AlertService();
 

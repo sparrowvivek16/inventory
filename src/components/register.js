@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
-import { validation } from '../common/Validation/validation';
+import { validation } from '../common/validation';
 
 class Register extends Component{
     constructor(props) {
@@ -79,14 +79,17 @@ class Register extends Component{
     }
 
         getAllUsers(){
-            const {userList} = this.state;
+            //const {userList} = this.state;
             this.db.collection("users")
             .get()
             .then(querySnapshot => {
               const data = querySnapshot.docs.map(doc => doc.data());
               console.log(data);
-              this.setState({userList:data})
-              console.log(userList);
+              this.setState({
+                  ...this.state,
+                  userList: data
+                });
+                console.log(this.state);
             });
             }
 
@@ -117,8 +120,8 @@ class Register extends Component{
                     </header>
                 <div className="container">
                     <div className="row justify-content-center">
-                        <div className="col-lg-7">
-                            <div className="card shadow-lg border-0 rounded-lg mt-5">
+                        <div className="col-lg-12">
+                            <div className="card shadow-lg border-0 rounded-lg mt-3">
                             <div className="card-header justify-content-center"><h3 className="font-weight-light my-4">Create Account</h3></div>
                                 <div className="card-body">
                                     <form id="login-form" onSubmit={this.submits}>
@@ -167,63 +170,65 @@ class Register extends Component{
                                         </div>
                                         </div>
                                         <div className="form-row">
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <label className="small mb-1" htmlFor="inputPassword">Password</label>
-                                            <input id="password" type="password" name="password" value={user.password} className="form-control" onChange={this.credentials} />
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label className="small mb-1" htmlFor="inputPassword">Password</label>
+                                                    <input id="password" type="password" name="password" value={user.password} className="form-control" onChange={this.credentials} />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label className="small mb-1" htmlFor="inputConfrimPassword">Confirm Password</label>
+                                                    <input id="confirmPassword" type="password" name="confirmPassword" value={user.confirmPassword} className="form-control" onChange={this.credentials} />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6 form-group text-right"> 
+                                                <button className="btn btn-primary btn-block" href="auth-login-basic.html">Create Account</button>
+                                            </div>
                                         </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                        <div className="form-group">
-                                            <label className="small mb-1" htmlFor="inputConfrimPassword">Confirm Password</label>
-                                            <input id="confirmPassword" type="password" name="confirmPassword" value={user.confirmPassword} className="form-control" onChange={this.credentials} />
-                                        </div>
-                                        </div>
-                                        </div>
-                                        <div className="form-group mt-4 mb-0"> <button className="btn btn-primary btn-block" href="auth-login-basic.html">Create Account</button></div>
-                                        
                                     </form>
                                 </div>
                             </div>
                         </div>
+                       
                     </div>
-                </div>
-                        <div className="card mb-4">
-                            <div className="card-header">User List</div>
-                            <div className="card-body">
-                                <div className="datatable">
-                                    <table className="table table-bordered table-hover" id="dataTable" width="100%" >
-                                        <thead>
-                                            <tr>
-                                                <th>First Name</th>
-                                                <th>Last Name</th>
-                                                <th>Address</th>
-                                                <th>Phone Number</th>
-                                                <th>Email</th>
-                                                <th>Role</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                                <td><div className="badge badge-primary badge-pill">Full-time</div></td>
-                                                <td>
-                                                    <button className="btn btn-datatable btn-icon btn-transparent-dark mr-2"><i data-feather="more-vertical"></i></button>
-                                                    <button className="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                    <div className="card shadow-lg border-0 rounded-lg  mt-3">
+                                <div className="card-header">User List</div>
+                                <div className="card-body">
+                                    <div className="datatable">
+                                        <table className="table table-bordered table-hover" id="dataTable" width="100%" >
+                                            <thead>
+                                                <tr>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Address</th>
+                                                    <th>Phone Number</th>
+                                                    <th>Email</th>
+                                                    <th>Role</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Tiger Nixon</td>
+                                                    <td>System Architect</td>
+                                                    <td>Edinburgh</td>
+                                                    <td>61</td>
+                                                    <td>2011/04/25</td>
+                                                    <td>$320,800</td>
+                                                    <td><div className="badge badge-primary badge-pill">Full-time</div></td>
+                                                    <td>
+                                                        <button className="btn btn-datatable btn-icon btn-transparent-dark mr-2"><i data-feather="more-vertical"></i></button>
+                                                        <button className="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                    </div>
+                </div>
             </main>            
             </div>
             </div>
