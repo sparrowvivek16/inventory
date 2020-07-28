@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component,Fragment } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import { validation } from '../common/validation';
+import ReactDatatable from '@ashvin27/react-datatable';
+import { commonService } from '../common/service/CommonService';
 
 class Register extends Component{
     constructor(props) {
@@ -19,14 +21,112 @@ class Register extends Component{
                 role:''
             },
             userList:[],
+            
 
         };
+        this.ViewInit();
         this.credentials = this.credentials.bind(this);
         this.submits = this.submits.bind(this);
         this.auth = firebase.auth();
         this.db = firebase.firestore();
         this.alerts = new AlertService();
     }
+    
+
+    ViewInit(){
+        this.config = {
+          page_size: 10,
+          length_menu: [ 2,10,25,50 ],
+           button: {
+                excel: true,
+                print: true,
+                extra: true,
+            }
+      }
+      
+          this.columns = [
+            {
+                key: "firstName", text: "First Name", className: "First Name", align: "left", sortable: true,
+            },
+            {
+              key: "lastName", text: "Last Name", className: "Last Name", align: "left", sortable: true,
+            },
+           {
+            key: "address", text: "Address", className: "Address", align: "left", sortable: true,
+           },
+           {
+            key: "phoneNumber", text: "Phone Number", className: "Phone Number", align: "left", sortable: true,
+           },
+           {
+            key: "email", text: "Email", className: "Email", align: "left", sortable: true,
+            },
+            {
+                key: "role", text: "Role", className: "Role", align: "left", sortable: true,
+             },
+           {
+              key: "action", text: "Action",className: "Action",  width: 100, align: "left" ,sortable: false,
+                cell: record => { 
+                    return (
+                        <Fragment>
+                             <button
+                                className="btn btn-primary btn-sm"
+                                onClick={() => this.editRecord(record)}
+                                style={{marginRight: '5px'}}>
+                                <i className="fa fa-edit"></i>
+                            </button>
+                            <button 
+                                className="btn btn-danger btn-sm" 
+                                onClick={() => this.deleteRecord(record)}>
+                                <i className="fa fa-trash"></i>
+                            </button>
+                        </Fragment>
+                    );
+                }
+            }
+        ];
+
+        this.extraButtons =[
+            {
+                className:"btn btn-primary buttons-pdf",
+                title:"Export TEst",
+                children:[
+                    <span>
+                    <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
+                    </span>
+                ],
+                onClick:(event)=>{
+                    console.log(event);
+                },
+            },
+            {
+                className:"btn btn-primary buttons-pdf",
+                title:"Export TEst",
+                children:[
+                    <span>
+                    <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
+                    </span>
+                ],
+                onClick:(event)=>{
+                    console.log(event);
+                },
+                onDoubleClick:(event)=>{
+                    console.log("doubleClick")
+                }
+            },
+        ]
+      }
+
+      editRecord(record) {
+              this.setState({  user : {
+                firstName: record.firstName,
+                lastName: record.lastName,
+                address: record.address,
+                phoneNumber: record.phoneNumber,
+                email: record.email,
+                role: record.role,
+              }
+            });
+      }
 
     credentials(event) {    
         const { name, value } = event.target;
@@ -43,26 +143,16 @@ class Register extends Component{
         event.preventDefault();
         const { user} = this.state;
         if(validation.registerValidation(user)){
-            this.auth.createUserWithEmailAndPassword(user.email,user.password).then((data)=>{
-           console.log(data);
-           this.db.collection("users").add({
-            firstName: user.firstName,
-            lastName:  user.lastName,
-            address:  user.address,
-            phoneNumber:  user.phoneNumber,
-            email:  user.email,
-            role:  user.role,
-        }).then((data) => {
-           console.log(data);
-           this.alerts.snack('Successfully Registered','green')
-           this.resetInput(user);
-        }).catch((error) => {
-           this.alerts.snack(error.message,'red')
-       })
-            }).catch((error) => {
-                this.alerts.snack(error.message,'red')
-            })           
+        commonService.AddEmail(user).then(() =>{
+            // this.alerts.snack('Successfully Added','bg-green');ed
+            
+            commonService.createUsers(user).then(()=>{
+                this.alerts.snack('Successfully Registered','bg-green');
+            });
+
+       });
     }
+
 }
    resetInput(user){
     this.setState({  
@@ -77,6 +167,10 @@ class Register extends Component{
             role:''
         }});
     }
+
+    tableAction(){
+       this.getAllUsers();
+      }
 
         getAllUsers(){
             //const {userList} = this.state;
@@ -99,7 +193,7 @@ class Register extends Component{
         }
 
     render() {
-        const { user} = this.state;
+        const {user} = this.state;
         return (
             <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
@@ -196,35 +290,13 @@ class Register extends Component{
                                 <div className="card-header">User List</div>
                                 <div className="card-body">
                                     <div className="datatable">
-                                        <table className="table table-bordered table-hover" id="dataTable" width="100%" >
-                                            <thead>
-                                                <tr>
-                                                    <th>First Name</th>
-                                                    <th>Last Name</th>
-                                                    <th>Address</th>
-                                                    <th>Phone Number</th>
-                                                    <th>Email</th>
-                                                    <th>Role</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Tiger Nixon</td>
-                                                    <td>System Architect</td>
-                                                    <td>Edinburgh</td>
-                                                    <td>61</td>
-                                                    <td>2011/04/25</td>
-                                                    <td>$320,800</td>
-                                                    <td><div className="badge badge-primary badge-pill">Full-time</div></td>
-                                                    <td>
-                                                        <button className="btn btn-datatable btn-icon btn-transparent-dark mr-2"><i data-feather="more-vertical"></i></button>
-                                                        <button className="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <ReactDatatable
+                                            config={this.config}
+                                            records={this.state.userList}
+                                            columns={this.columns}
+                                            extraButtons={this.extraButtons}
+                                            onChange={(data)=>this.tableAction(data)}
+                                        />
                                     </div>
                                 </div>
                             </div>
