@@ -184,18 +184,15 @@ class Register extends Component{
                                         
                                     </form>
                                 </div>
-                                {/* <div className="card-footer text-center">
-                                <Link  to="/login"> <div className="small">Already registered Sign in!</div></Link>
-                                </div> */}
                             </div>
                         </div>
                     </div>
                 </div>
-                        <div class="card mb-4">
-                            <div class="card-header">User List</div>
-                            <div class="card-body">
-                                <div class="datatable">
-                                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <div className="card mb-4">
+                            <div className="card-header">User List</div>
+                            <div className="card-body">
+                                <div className="datatable">
+                                    <table className="table table-bordered table-hover" id="dataTable" width="100%" >
                                         <thead>
                                             <tr>
                                                 <th>First Name</th>
@@ -216,10 +213,10 @@ class Register extends Component{
                                                 <td>61</td>
                                                 <td>2011/04/25</td>
                                                 <td>$320,800</td>
-                                                <td><div class="badge badge-primary badge-pill">Full-time</div></td>
+                                                <td><div className="badge badge-primary badge-pill">Full-time</div></td>
                                                 <td>
-                                                    <button class="btn btn-datatable btn-icon btn-transparent-dark mr-2"><i data-feather="more-vertical"></i></button>
-                                                    <button class="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
+                                                    <button className="btn btn-datatable btn-icon btn-transparent-dark mr-2"><i data-feather="more-vertical"></i></button>
+                                                    <button className="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
                                                 </td>
                                             </tr>
                                         </tbody>
