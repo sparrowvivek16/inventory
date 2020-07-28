@@ -33,8 +33,7 @@ class Newitem extends Component{
           
             this.setState({ item: {} });
             document.getElementById('add-new-item').reset();
-        }
-               
+        }               
     }
     
 
@@ -55,7 +54,7 @@ class Newitem extends Component{
                                 </div>
                             </div>
                         </div>
-                    </header>                    
+                    </header>
                     <div className="container">
                         <div className="card">
                             <div className="card-header">Add New Item</div>

@@ -18,6 +18,10 @@ class DashboardSidebar extends Component{
                                     <div className="nav-link-icon"><i data-feather="plus-square"></i></div>                                   
                                     New Item  
                                 </NavLink>
+                                <NavLink className="nav-link" to="/settings">                         
+                                    <div className="nav-link-icon"><i data-feather="settings"></i></div>                                   
+                                    Settings  
+                                </NavLink>
                                 <div className="sidenav-menu-heading">Admin</div>                               
                                 <NavLink className="nav-link" to="/register">
                                     <div className="nav-link-icon"><i data-feather="plus"></i></div>

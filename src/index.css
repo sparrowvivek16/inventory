@@ -20510,6 +20510,7 @@ pre[class*=language-] {
   box-shadow: 1px 3px 5px rgba(0,0,0,0.2);
   background: #ff6565;
   text-align: center;
+  font-size: 15px;
   color: #fff;
   margin-top: -100%;  
   transition: all 0.2s;
