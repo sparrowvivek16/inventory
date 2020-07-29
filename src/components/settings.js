@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import firebase from '../config/fbfsConfig';
+import firebase from '../config/firebase.Config';
 import AlertService from '../common/service/AlertService';
 import StorageService from '../common/service/StorageService';
 import { validations } from '../common/validations';
 import feather from 'feather-icons';
 import { utility } from '../common/utility';
+import { commonService } from '../common/service/CommonService';
+
 
 class Settings extends Component{
     constructor(props){
@@ -26,21 +28,22 @@ class Settings extends Component{
         
         // Activate Feather icons
         feather.replace();
-        this.getAllCategory();
+        
+        // fetch all category and assign to select box
+        commonService.getAllCategory().then(data => {
+            let justCategory = new Set();           
+            data.forEach(dat => justCategory.add(dat.data().name));
+            justCategory.forEach(jCat =>{
+                document.querySelector('select#category').innerHTML += 
+                `<option value=${jCat}>${utility.capitalizeFirstLetter(jCat)}</option>`;
+            });           
+        });
     }
     getFormData = (e) =>{
         this.setState({ 
                 ...this.state,
                 [e.target.id] : e.target.value
         });              
-    }
-
-    getAllCategory = () => {
-        this.conn.get().then(data =>{
-           data.forEach(dat =>{
-           document.querySelector('select#category').innerHTML +=`<option value=${dat.data().name}>${utility.capitalizeFirstLetter(dat.data().name)}</option>`;
-           });
-        }).catch(err=>console.log(err));
     }
 
     addNewCategory = (e) =>{
@@ -77,15 +80,23 @@ class Settings extends Component{
             .where('name', '==', this.state.category)
             .where('subcategory', '==', this.state.subcategory)
             .get().then(val => {
+                let cat = this.state.category; 
                 if(validations.newCategoryValid(val,4)){
-
-                //reset the sate and form
-                this.setState({ 
-                    ...this.state,
-                    category : null,
-                    subcategory : null
-                });  
-                document.getElementById('new-sub-category').reset();              
+                   
+                //insert into DB
+                this.conn.add({
+                    name : this.state.category,
+                    subcategory : this.state.subcategory
+                 }).then(()=> {
+                     this.alerts.snack(`New Subcatergory added for ${cat}`,'bg-green');
+                     //reset the sate and form
+                    this.setState({
+                        ...this.state,
+                        category : null,
+                        subcategory : null
+                    });  
+                    document.getElementById('new-sub-category').reset();  
+                }).catch(err=> console.log(err));
                 }
             })
             .catch(err =>console.log(err));

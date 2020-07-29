@@ -1,20 +1,65 @@
 import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
-import firebase from '../config/fbfsConfig';
+import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
 import { validations } from '../common/validations';
 import feather from 'feather-icons';
+import { commonService } from '../common/service/CommonService';
+import { utility } from '../common/utility';
+import SelectPure from "select-pure";
 
 class Newitem extends Component{
     constructor(props){
         super(props);
         this.alerts = new AlertService();
         this.storage = new StorageService();
-        this.auth = firebase.auth();
         this.db = firebase.firestore();
     }
     componentDidMount(){
+         //check if session is available, if not redirect to login
+         if(this.storage.getToken()==null){
+            this.props.history.push('/login');
+        }
+        
+        // Activate Feather icons
         feather.replace();
+        const myOptions = [
+            {
+              label: "New York",
+              value: "NY",
+            },
+            {
+              label: "Washington",
+              value: "WA",
+            },
+            {
+              label: "California",
+              value: "CA",
+            },
+            {
+              label: "New Jersey",
+              value: "NJ",
+            },
+            {
+              label: "North Carolina",
+              value: "NC",
+            },
+          ];
+
+        let instance = new SelectPure("#tax", {
+            options:   myOptions,      
+            multiple: true // default: false
+        });
+
+        // fetch all category and assign to select box
+        commonService.getAllCategory().then(data => {
+            let justCategory = new Set();           
+            data.forEach(dat => justCategory.add(dat.data().name));
+            justCategory.forEach(jCat =>{
+                document.querySelector('select#category').innerHTML += 
+                `<option value=${jCat}>${utility.capitalizeFirstLetter(jCat)}</option>`;
+            });           
+        });
     }
     state = {     
         item: {}
@@ -25,7 +70,12 @@ class Newitem extends Component{
                 ...this.state.item,
                 [e.target.id] : e.target.value
             }
-        });       
+        });
+
+        //asend value to set sub category
+        if(e.target.id === 'category'){
+            this.setSubCategory(e.target.value);
+        }
     }
     addNew = (e) =>{
         e.preventDefault();       
@@ -35,7 +85,20 @@ class Newitem extends Component{
             document.getElementById('add-new-item').reset();
         }               
     }
-    
+
+    setSubCategory = (cat) =>{
+        commonService.getAllCategory().then(data => {
+            document.querySelector('select#subcategory').innerHTML ='';
+            data.forEach(dat=> {
+                if(dat.data().name === cat){
+                    document.querySelector('select#subcategory').innerHTML += 
+                    `<option value=${dat.data().subcategory}>${utility.capitalizeFirstLetter(dat.data().subcategory)}</option>`;
+                }
+            });
+        })
+        .catch(err=> console.log(err));
+        
+    }
 
     render(){
         
@@ -74,9 +137,6 @@ class Newitem extends Component{
                                                     <label htmlFor="category">Category</label>
                                                     <select className="form-control" id="category"placeholder="pick a category" onChange={this.getFormData}>                                                        
                                                         <option value="0">--select--</option>
-                                                        <option value="grain">Grain</option>
-                                                        <option value="pluses">Pluses</option>
-                                                        <option value="pickles">Pickles</option>                                                        
                                                     </select>
                                                 </div>
                                             </div>
@@ -85,9 +145,6 @@ class Newitem extends Component{
                                                     <label htmlFor="subcategory">Sub Category</label>
                                                     <select className="form-control" id="subcategory" onChange={this.getFormData}>
                                                         <option value="0">--select--</option>
-                                                        <option value="grain">rice</option>
-                                                        <option value="pluses">wheat</option>
-                                                        <option value="pickles">oat</option>                                                        
                                                     </select>
                                                 </div>
                                             </div>
@@ -142,7 +199,7 @@ class Newitem extends Component{
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="tax">Tax(s)</label>
-                                                    <select className="form-control" id="tax" onChange={this.getFormData}>
+                                                    <select className="form-control" id="tax" multiple onChange={this.getFormData}>
                                                         <option value="0">--select--</option>
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
