@@ -25,7 +25,7 @@ class Register extends Component{
         };
         this.ViewInit();
         this.credentials = this.credentials.bind(this);
-        this.submits = this.submits.bind(this);
+        //this.submits = this.submits.bind(this);
         this.auth = firebase.auth();
         this.db = firebase.firestore();
         this.alerts = new AlertService();
@@ -151,19 +151,27 @@ class Register extends Component{
         });
     }
 
-    submits(event) { 
-        event.preventDefault();
-        const { user} = this.state;
-        if(validation.registerValidation(user)){
-            commonService.addEmail(user).then(() =>{
-                window.location.reload(false);
-                this.alerts.snack('Successfully Registered','bg-green');
-            }).catch(error=> {   
-                this.alerts.snack(error.message,'red');
-             });
-    }
-
+    submits = (e) =>{
+        e.preventDefault();
+        const { user } = this.state;
+        commonService.addEmail(user).then(data=>{
+            if(data){
+                this.alerts.snack('User email added','bg-green') 
+                commonService.createUsers(user).then(data=>{ 
+                    if(data){
+                        this.alerts.snack('Successfully registered user','bg-green');
+                    }else{ 
+                        this.alerts.snack('Error registering user','bg-red')
+                    }
+                }).catch(err=>console.log(err));
+            }else{ 
+                this.alerts.snack('Error in adding user email','bg-red')
+            }
+    }).catch(err=>console.log(err));
 }
+    
+
+
    resetInput(user){
     this.setState({  
         user: {

@@ -16,16 +16,13 @@ function signIn(user,password) {
     return signIn;
  }
 
-function addEmail(user) {
-    const addEmail= auth.createUserWithEmailAndPassword(user.email,user.password);
-    if(addEmail===true){
-        createUsers(user);
-    }
-    return addEmail;
+async function addEmail(user) {
+    return await auth.createUserWithEmailAndPassword(user.email,user.password);    
+    
  }
 
-function createUsers(user) {
-        const createUsers = db.collection("users").add({
+async function createUsers(user) {
+        return await db.collection("users").add({
          firstName: user.firstName,
          lastName:  user.lastName,
          address:  user.address,
@@ -33,7 +30,6 @@ function createUsers(user) {
          email:  user.email,
          role:  user.role,
      });
-     return createUsers;
 }
 
 // function updateUser(user) {
