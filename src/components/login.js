@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
+import { commonService } from '../common/service/CommonService';
 
 class Login extends Component{
     constructor(props){
@@ -29,8 +30,9 @@ class Login extends Component{
 
     submits = (e) =>{
         e.preventDefault();
-        if(this.state.user && this.state.password !== null){           
-            this.auth.signInWithEmailAndPassword(this.state.user,this.state.password).then( credt => {
+        const {user,password} = this.state;
+        if(user && password !== null){           
+            commonService.signIn(user,password).then((credt) =>{
                 console.log(credt.user);       
                 this.storage.setUID(credt.user.uid);
                 this.storage.setToken(credt.user.l);

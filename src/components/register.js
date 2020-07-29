@@ -21,8 +21,6 @@ class Register extends Component{
                 role:''
             },
             userList:[],
-            
-
         };
         this.ViewInit();
         this.credentials = this.credentials.bind(this);
@@ -36,11 +34,10 @@ class Register extends Component{
     ViewInit(){
         this.config = {
           page_size: 10,
-          length_menu: [ 2,10,25,50 ],
+          length_menu: [ 10,25,50 ],
            button: {
-                excel: true,
-                print: true,
-                extra: true,
+                excel: false,
+                print: false,
             }
       }
       
@@ -84,37 +81,38 @@ class Register extends Component{
                 }
             }
         ];
+    }
 
-        this.extraButtons =[
-            {
-                className:"btn btn-primary buttons-pdf",
-                title:"Export TEst",
-                children:[
-                    <span>
-                    <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
-                    </span>
-                ],
-                onClick:(event)=>{
-                    console.log(event);
-                },
-            },
-            {
-                className:"btn btn-primary buttons-pdf",
-                title:"Export TEst",
-                children:[
-                    <span>
-                    <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
-                    </span>
-                ],
-                onClick:(event)=>{
-                    console.log(event);
-                },
-                onDoubleClick:(event)=>{
-                    console.log("doubleClick")
-                }
-            },
-        ]
-      }
+    //     this.extraButtons =[
+    //         {
+    //             className:"btn btn-primary buttons-pdf",
+    //             title:"Export TEst",
+    //             children:[
+    //                 <span>
+    //                 <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
+    //                 </span>
+    //             ],
+    //             onClick:(event)=>{
+    //                 console.log(event);
+    //             },
+    //         },
+    //         {
+    //             className:"btn btn-primary buttons-pdf",
+    //             title:"Export TEst",
+    //             children:[
+    //                 <span>
+    //                 <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
+    //                 </span>
+    //             ],
+    //             onClick:(event)=>{
+    //                 console.log(event);
+    //             },
+    //             onDoubleClick:(event)=>{
+    //                 console.log("doubleClick")
+    //             }
+    //         },
+    //     ]
+    //   }
 
       editRecord(record) {
               this.setState({  user : {
@@ -143,14 +141,12 @@ class Register extends Component{
         event.preventDefault();
         const { user} = this.state;
         if(validation.registerValidation(user)){
-        commonService.AddEmail(user).then(() =>{
-            // this.alerts.snack('Successfully Added','bg-green');ed
-            
-            commonService.createUsers(user).then(()=>{
+            commonService.addEmail(user).then(() =>{
+                window.location.reload(false);
                 this.alerts.snack('Successfully Registered','bg-green');
-            });
-
-       });
+            }).catch(error=> {   
+                this.alerts.snack(error.message,'red');
+             });
     }
 
 }
@@ -294,7 +290,6 @@ class Register extends Component{
                                             config={this.config}
                                             records={this.state.userList}
                                             columns={this.columns}
-                                            extraButtons={this.extraButtons}
                                             onChange={(data)=>this.tableAction(data)}
                                         />
                                     </div>

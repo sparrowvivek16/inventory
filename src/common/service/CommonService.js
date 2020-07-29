@@ -5,19 +5,26 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 export const commonService = {
+    signIn,
     createUsers,
-    AddEmail
+    addEmail
 }
 
-function AddEmail(user) {
-    const addemail= auth.createUserWithEmailAndPassword(user.email,user.password);
-    //createUsers(user);
-    return addemail;
+function signIn(user,password) {
+    const signIn= auth.signInWithEmailAndPassword(user,password);
+    return signIn;
+ }
+
+function addEmail(user) {
+    const addEmail= auth.createUserWithEmailAndPassword(user.email,user.password);
+    if(addEmail===true){
+        createUsers(user);
+    }
+    return addEmail;
  }
 
 function createUsers(user) {
-  
-        const cUsers = db.collection("users").add({
+        const createUsers = db.collection("users").add({
          firstName: user.firstName,
          lastName:  user.lastName,
          address:  user.address,
@@ -25,6 +32,6 @@ function createUsers(user) {
          email:  user.email,
          role:  user.role,
      });
-     return cUsers;
+     return createUsers;
 }
 
