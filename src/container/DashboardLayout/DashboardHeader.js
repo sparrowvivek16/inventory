@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
-
+import firebase from '../../config/firebase.Config';
+import StorageService from '../../common/service/StorageService';
 
 class DashboardHeader extends Component{
+    constructor(props) {
+        super(props)
+        this.state = {
+             
+        }
+        this.auth = firebase.auth();
+        this.storage = new StorageService();
+    }
+    
 
     logout = () =>{
         this.auth.signOut().then(() =>{

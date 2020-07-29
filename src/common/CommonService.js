@@ -1,5 +1,5 @@
 
-import firebase from '../../config/firebase.Config';
+import firebase from '../config/firebase.Config';
 
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -7,7 +7,8 @@ const db = firebase.firestore();
 export const commonService = {
     signIn,
     createUsers,
-    addEmail
+    addEmail,
+    //updateUser
 }
 
 function signIn(user,password) {
@@ -34,4 +35,14 @@ function createUsers(user) {
      });
      return createUsers;
 }
+
+// function updateUser(user) {
+//     const updateUser = this.db.collection("users").doc(doc.id).update({ 
+//         firstName: user.firstName,
+//         lastName:  user.lastName,
+//         address:  user.address,
+//         phoneNumber:  user.phoneNumber,
+//         role:  user.role});
+//  return updateUser;
+// }
 

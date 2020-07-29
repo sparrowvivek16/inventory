@@ -3,7 +3,7 @@ import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import { validation } from '../common/validation';
 import ReactDatatable from '@ashvin27/react-datatable';
-import { commonService } from '../common/service/CommonService';
+import { commonService } from '../common/CommonService';
 
 class Register extends Component{
     constructor(props) {
@@ -21,6 +21,7 @@ class Register extends Component{
                 role:''
             },
             userList:[],
+            update:false
         };
         this.ViewInit();
         this.credentials = this.credentials.bind(this);
@@ -122,8 +123,21 @@ class Register extends Component{
                 phoneNumber: record.phoneNumber,
                 email: record.email,
                 role: record.role,
-              }
+              },update:true
             });
+        //     const { user} = this.state;
+        //     if(validation.registerValidation(user)){
+        //         commonService.updateUser(user).then(() =>{
+        //             window.location.reload(false);
+        //             this.alerts.snack('Successfully Registered','bg-green');
+        //         }).catch(error=> {   
+        //             this.alerts.snack(error.message,'red');
+        //          });
+        // }
+      }
+
+      deleteRecord(record){
+
       }
 
     credentials(event) {    
@@ -189,7 +203,7 @@ class Register extends Component{
         }
 
     render() {
-        const {user} = this.state;
+        const {user,update} = this.state;
         return (
             <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
@@ -243,11 +257,6 @@ class Register extends Component{
                                         </div>
                                         </div>
                                         <div className="form-row">
-                                    <div className="col-md-6">
-                                        <div className="form-group">
-                                            <label className="small mb-1" htmlFor="inputEmail">Email</label>
-                                            <input id="email" type="text" name="email" value={user.email} className="form-control" onChange={this.credentials} />
-                                        </div> </div>
                                         <div className="col-md-6">
                                         <div className="form-group">       
                                         <label className="small mb-1" htmlFor="inputRole">Role</label>                                 
@@ -258,23 +267,31 @@ class Register extends Component{
                                                 </select>                
                                         </div>
                                         </div>
+                                        {update===false &&<div className="col-md-6">
+                                        <div className="form-group">
+                                            <label className="small mb-1" htmlFor="inputEmail">Email</label>
+                                            <input id="email" type="text" name="email" value={user.email} className="form-control" onChange={this.credentials} />
+                                        </div> </div>}
                                         </div>
-                                        <div className="form-row">
-                                            <div className="col-md-6">
+                                         <div className="form-row">
+                                         {update===false &&<div className="col-md-6">
                                                 <div className="form-group">
                                                     <label className="small mb-1" htmlFor="inputPassword">Password</label>
                                                     <input id="password" type="password" name="password" value={user.password} className="form-control" onChange={this.credentials} />
                                                 </div>
-                                            </div>
-                                            <div className="col-md-6">
+                                            </div>}
+                                            {update===false &&<div className="col-md-6">
                                                 <div className="form-group">
                                                     <label className="small mb-1" htmlFor="inputConfrimPassword">Confirm Password</label>
                                                     <input id="confirmPassword" type="password" name="confirmPassword" value={user.confirmPassword} className="form-control" onChange={this.credentials} />
                                                 </div>
-                                            </div>
-                                            <div className="col-md-6 form-group text-right"> 
+                                            </div>}
+                                            {update===false &&<div className="col-md-6 form-group text-right"> 
                                                 <button className="btn btn-primary btn-block" href="auth-login-basic.html">Create Account</button>
-                                            </div>
+                                            </div>}
+                                            {update && <div className="col-md-6 form-group text-right"> 
+                                                <button className="btn btn-primary btn-block" href="auth-login-basic.html">Update</button>
+                                            </div>}
                                         </div>
                                     </form>
                                 </div>
