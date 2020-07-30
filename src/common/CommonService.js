@@ -8,7 +8,7 @@ export const commonService = {
     signIn,
     createUsers,
     addEmail,
-    //updateUser
+    getUsers
 }
 
 function signIn(user,password) {
@@ -32,13 +32,8 @@ async function createUsers(user) {
      });
 }
 
-// function updateUser(user) {
-//     const updateUser = this.db.collection("users").doc(doc.id).update({ 
-//         firstName: user.firstName,
-//         lastName:  user.lastName,
-//         address:  user.address,
-//         phoneNumber:  user.phoneNumber,
-//         role:  user.role});
-//  return updateUser;
-// }
+function getUsers() {
+    const getUsers = db.collection("users").get(); 
+ return getUsers;
+}
 

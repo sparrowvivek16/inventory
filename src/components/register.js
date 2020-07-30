@@ -1,9 +1,10 @@
-import React, { Component,Fragment } from 'react';
+import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import { validation } from '../common/validation';
 import ReactDatatable from '@ashvin27/react-datatable';
 import { commonService } from '../common/CommonService';
+import Switch from 'react-toggle-switch'
 
 class Register extends Component{
     constructor(props) {
@@ -18,14 +19,13 @@ class Register extends Component{
                 email: '',
                 password: '',
                 confirmPassword: '',
-                role:''
+                role:'',
             },
             userList:[],
-            update:false
+            disabled: false
         };
         this.ViewInit();
         this.credentials = this.credentials.bind(this);
-        //this.submits = this.submits.bind(this);
         this.auth = firebase.auth();
         this.db = firebase.firestore();
         this.alerts = new AlertService();
@@ -35,7 +35,7 @@ class Register extends Component{
     ViewInit(){
         this.config = {
           page_size: 10,
-          length_menu: [ 10,25,50 ],
+          length_menu: [10,25,50 ],
            button: {
                 excel: false,
                 print: false,
@@ -65,80 +65,19 @@ class Register extends Component{
               key: "action", text: "Action",className: "Action",  width: 100, align: "left" ,sortable: false,
                 cell: record => { 
                     return (
-                        <Fragment>
-                             <button
-                                className="btn btn-primary btn-sm"
-                                onClick={() => this.editRecord(record)}
-                                style={{marginRight: '5px'}}>
-                                <i className="fa fa-edit"></i>
-                            </button>
-                            <button 
-                                className="btn btn-danger btn-sm" 
-                                onClick={() => this.deleteRecord(record)}>
-                                <i className="fa fa-trash"></i>
-                            </button>
-                        </Fragment>
+                        <div className="action-row-td">
+                        <Switch onClick={()=>this.toggleRecord(record)} on={this.state.disabled}/>
+                        </div>
                     );
                 }
             }
         ];
     }
 
-    //     this.extraButtons =[
-    //         {
-    //             className:"btn btn-primary buttons-pdf",
-    //             title:"Export TEst",
-    //             children:[
-    //                 <span>
-    //                 <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
-    //                 </span>
-    //             ],
-    //             onClick:(event)=>{
-    //                 console.log(event);
-    //             },
-    //         },
-    //         {
-    //             className:"btn btn-primary buttons-pdf",
-    //             title:"Export TEst",
-    //             children:[
-    //                 <span>
-    //                 <i className="glyphicon glyphicon-print fa fa-print" aria-hidden="true"></i>
-    //                 </span>
-    //             ],
-    //             onClick:(event)=>{
-    //                 console.log(event);
-    //             },
-    //             onDoubleClick:(event)=>{
-    //                 console.log("doubleClick")
-    //             }
-    //         },
-    //     ]
-    //   }
-
-      editRecord(record) {
-              this.setState({  user : {
-                firstName: record.firstName,
-                lastName: record.lastName,
-                address: record.address,
-                phoneNumber: record.phoneNumber,
-                email: record.email,
-                role: record.role,
-              },update:true
-            });
-        //     const { user} = this.state;
-        //     if(validation.registerValidation(user)){
-        //         commonService.updateUser(user).then(() =>{
-        //             window.location.reload(false);
-        //             this.alerts.snack('Successfully Registered','bg-green');
-        //         }).catch(error=> {   
-        //             this.alerts.snack(error.message,'red');
-        //          });
-        // }
-      }
-
-      deleteRecord(record){
-
-      }
+    toggleRecord(record){
+        console.log("jkgi");
+        this.setState( {disabled: !this.state.disabled} )
+    }
 
     credentials(event) {    
         const { name, value } = event.target;
@@ -154,12 +93,13 @@ class Register extends Component{
     submits = (e) =>{
         e.preventDefault();
         const { user } = this.state;
+        if(validation.registerValidation(user)){
         commonService.addEmail(user).then(data=>{
             if(data){
-                this.alerts.snack('User email added','bg-green') 
                 commonService.createUsers(user).then(data=>{ 
                     if(data){
-                        this.alerts.snack('Successfully registered user','bg-green');
+                        window.location.reload(false);
+                            this.alerts.snack('Successfully Registered','bg-green');
                     }else{ 
                         this.alerts.snack('Error registering user','bg-red')
                     }
@@ -169,9 +109,21 @@ class Register extends Component{
             }
     }).catch(err=>console.log(err));
 }
+}
+
+getAllUsers(){
+    commonService.getUsers()
+     .then(data => {
+         console.log(data.docs);
+         console.log(data.docs.length);
+       const datas = data.docs.map(doc => doc.data());
+       console.log(datas);
+       this.setState({
+           userList: datas
+         });
+     });
+     }
     
-
-
    resetInput(user){
     this.setState({  
         user: {
@@ -190,28 +142,12 @@ class Register extends Component{
        this.getAllUsers();
       }
 
-        getAllUsers(){
-            //const {userList} = this.state;
-            this.db.collection("users")
-            .get()
-            .then(querySnapshot => {
-              const data = querySnapshot.docs.map(doc => doc.data());
-              console.log(data);
-              this.setState({
-                  ...this.state,
-                  userList: data
-                });
-                console.log(this.state);
-            });
-            }
-
-
         componentDidMount(){
             this.getAllUsers();
         }
 
     render() {
-        const {user,update} = this.state;
+        const {user} = this.state;
         return (
             <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
@@ -275,31 +211,28 @@ class Register extends Component{
                                                 </select>                
                                         </div>
                                         </div>
-                                        {update===false &&<div className="col-md-6">
+                                        <div className="col-md-6">
                                         <div className="form-group">
                                             <label className="small mb-1" htmlFor="inputEmail">Email</label>
                                             <input id="email" type="text" name="email" value={user.email} className="form-control" onChange={this.credentials} />
-                                        </div> </div>}
+                                        </div> </div>
                                         </div>
                                          <div className="form-row">
-                                         {update===false &&<div className="col-md-6">
+                                         <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label className="small mb-1" htmlFor="inputPassword">Password</label>
                                                     <input id="password" type="password" name="password" value={user.password} className="form-control" onChange={this.credentials} />
                                                 </div>
-                                            </div>}
-                                            {update===false &&<div className="col-md-6">
+                                            </div>
+                                            <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label className="small mb-1" htmlFor="inputConfrimPassword">Confirm Password</label>
                                                     <input id="confirmPassword" type="password" name="confirmPassword" value={user.confirmPassword} className="form-control" onChange={this.credentials} />
                                                 </div>
-                                            </div>}
-                                            {update===false &&<div className="col-md-6 form-group text-right"> 
+                                            </div>
+                                            <div className="col-md-6 form-group text-right"> 
                                                 <button className="btn btn-primary btn-block" href="auth-login-basic.html">Create Account</button>
-                                            </div>}
-                                            {update && <div className="col-md-6 form-group text-right"> 
-                                                <button className="btn btn-primary btn-block" href="auth-login-basic.html">Update</button>
-                                            </div>}
+                                            </div> 
                                         </div>
                                     </form>
                                 </div>
