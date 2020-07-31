@@ -25,11 +25,11 @@ class Newitem extends Component{
         feather.replace();
         const myOptions = [
             {
-              label: "New York",
+              label: "New York ",
               value: "NY",
             },
             {
-              label: "Washington",
+              label: "Washington ",
               value: "WA",
             },
             {
@@ -46,9 +46,11 @@ class Newitem extends Component{
             },
           ];
 
-        let instance = new SelectPure("#tax", {
-            options:   myOptions,      
-            multiple: true // default: false
+         new SelectPure(".selectTax", {
+            options:   myOptions,    
+            multiple: true, // default: false
+            autocomplete: true,
+            icon: 'fa fa-times'
         });
 
         // fetch all category and assign to select box
@@ -72,8 +74,9 @@ class Newitem extends Component{
             }
         });
 
-        //asend value to set sub category
+        //send value to set sub category
         if(e.target.id === 'category'){
+            
             this.setSubCategory(e.target.value);
         }
     }
@@ -199,12 +202,7 @@ class Newitem extends Component{
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="tax">Tax(s)</label>
-                                                    <select className="form-control" id="tax" multiple onChange={this.getFormData}>
-                                                        <option value="0">--select--</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>                                                       
-                                                    </select>
+                                                    <span className="selectTax" id="tax"></span>
                                                 </div>
                                             </div>
                                             <div className="col-md-6">

@@ -6,7 +6,7 @@ import { validations } from '../common/validations';
 import feather from 'feather-icons';
 import { utility } from '../common/utility';
 import { commonService } from '../common/service/CommonService';
-
+import Editcategory from './tables/editcategory';
 
 class Settings extends Component{
     constructor(props){
@@ -29,15 +29,10 @@ class Settings extends Component{
         // Activate Feather icons
         feather.replace();
         
-        // fetch all category and assign to select box
-        commonService.getAllCategory().then(data => {
-            let justCategory = new Set();           
-            data.forEach(dat => justCategory.add(dat.data().name));
-            justCategory.forEach(jCat =>{
-                document.querySelector('select#category').innerHTML += 
-                `<option value=${jCat}>${utility.capitalizeFirstLetter(jCat)}</option>`;
-            });           
-        });
+        //activate category settings
+        this.categorySettings();
+        
+        
     }
     getFormData = (e) =>{
         this.setState({ 
@@ -57,16 +52,19 @@ class Settings extends Component{
                    this.conn.add({
                        name : this.state.newcategory,
                        subcategory : this.state.newsubcategory
-                    }).then(()=> this.alerts.snack('New category and a single sub catergory added.','green'))
-                    .catch(err=> console.log(err));
+                    }).then(()=> {
+                        //assign the new category to the select box
+                        this.categorySettings();
+                        this.alerts.snack('New category and a single sub catergory added.','green');
 
-                //reset the sate and form
-                this.setState({ 
-                    ...this.state,
-                    newcategory : null,
-                    newsubcategory : null
-                 });                
-                document.getElementById('new-category').reset();
+                        //reset the sate and form
+                        this.setState({ 
+                            ...this.state,
+                            newcategory : null,
+                            newsubcategory : null
+                        });                
+                        document.getElementById('new-category').reset();
+                    }).catch(err=> console.log(err));
                }
             }).catch(err => console.log(err));
         }
@@ -88,7 +86,8 @@ class Settings extends Component{
                     name : this.state.category,
                     subcategory : this.state.subcategory
                  }).then(()=> {
-                     this.alerts.snack(`New Subcatergory added for ${cat}`,'bg-green');
+                     this.categorySettings()
+                     this.alerts.snack(`New Subcategory added for ${cat}`,'bg-green');
                      //reset the sate and form
                     this.setState({
                         ...this.state,
@@ -102,6 +101,36 @@ class Settings extends Component{
             .catch(err =>console.log(err));
             
         }
+    }
+
+    categorySettings = () =>{
+        // fetch all category
+        commonService.getAllCategory().then(data => {
+            //assign to select box            
+            let justCategory = new Set();           
+            data.forEach(dat => justCategory.add(dat.data().name));
+            document.querySelector('select#category').innerHTML = '<option value="0">--select--</option>';
+            justCategory.forEach(jCat =>{
+                document.querySelector('select#category').innerHTML += 
+                `<option value=${jCat}>${utility.capitalizeFirstLetter(jCat)}</option>`;
+            }); 
+            //send to editcategory table
+            let allCategory=[];       
+            data.docs.forEach((val,i) => {
+                let categoryCollection ={
+                    "id": val.id,
+                    "slno": i+1,
+                    "category": val.data().name,
+                    "subcategory": val.data().subcategory
+                    };
+                allCategory.push(categoryCollection);
+            });
+           
+            this.setState({ 
+                ...this.state,
+                allCategory
+            });  
+        }).catch(err => console.log(err));
     }
 
     render(){
@@ -122,13 +151,13 @@ class Settings extends Component{
             </header>
             <div className="container">
                 <div className="row">
-                    <div className="col-xxl-12">
+                    <div className="col-md-6">
                     <div className="card mb-4">
                             <div className="card-header border-bottom">
                                 {/* Tab navigation--> */}
                                 <ul className="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
                                     <li className="nav-item mr-1"><a className="nav-link active" id="overview-pill" href="#overview" data-toggle="tab" role="tab" aria-controls="overview" aria-selected="true">Add Category</a></li>
-                                    <li className="nav-item"><a className="nav-link" id="activities-pill" href="#activities" data-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">View / Edit Category</a></li>
+                                    <li className="nav-item"><a className="nav-link" id="activities-pill" href="#activities" data-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Edit / Delete Category</a></li>
                                 </ul>
                             </div>
                             <div className="card-body">
@@ -174,38 +203,78 @@ class Settings extends Component{
                                     </div>
                                 {/* <!-- Category Tab Pane 2--> */}
                                     <div className="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
-                                        <div className="datatable table-responsive">
-                                            <table className="table table-bordered table-hover" id="dataTableActivity" width="100%" cellSpacing="0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Event</th>
-                                                        <th>Time</th>
-                                                    </tr>
-                                                </thead>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Event</th>
-                                                        <th>Time</th>
-                                                    </tr>
-                                                </tfoot>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>01/13/20</td>
-                                                        <td>
-                                                            <i className="mr-2 text-green" data-feather="zap"></i>
-                                                            Server online
-                                                        </td>
-                                                        <td>1:21 AM</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div >
+                                            <Editcategory records={this.state.allCategory} tableRefresh={this.categorySettings} />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div className="col-md-6">
+                    <div className="card mb-4">
+                            <div className="card-header border-bottom">
+                                 {/* Unit Tab navigation--> */}
+                                 <ul className="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
+                                    <li className="nav-item mr-1"><a className="nav-link active" id="addUnit-pill" href="#addUnit" data-toggle="tab" role="tab" aria-controls="addUnit" aria-selected="true">Add Units</a></li>
+                                    <li className="nav-item"><a className="nav-link" id="editUnit-pill" href="#editUnit" data-toggle="tab" role="tab" aria-controls="editUnit" aria-selected="false">Delete Units</a></li>
+                                </ul>
+                            </div>
+                            <div className="card-body">
+                                <div className="tab-content" id="dashboardNavContent">
+                                    {/* <!-- Unit Tab Pane 1--> */}
+                                    <div className="tab-pane fade show active" id="addUnit" role="tabpanel" aria-labelledby="addUnit-pill">
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                                <form id="new-unit" onSubmit={this.addNewUnit}>                                                    
+                                                    <div className="form-group">
+                                                        <label htmlFor="newcategory">Add Unit</label>
+                                                        <input className="form-control" id="newunit" type="text" placeholder="Enter new Unit" onChange={this.getFormData}/>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <button className="btn btn-primary" type="submit">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     {/* <!-- Unit Tab Pane 2--> */}
+                                     <div className="tab-pane fade" id="editUnit" role="tabpanel" aria-labelledby="editUnit-pill">
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                            <div className="table-responsive">
+                                            <table className="table table-bordered table-hover" id="dataTableActivity" width="100%" cellSpacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="1%">#</th>
+                                                        <th width="80%">Unit</th>
+                                                        <th width="19%">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Unit</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Rice</td>
+                                                        <td>
+                                                            <button className="btn btn-datatable btn-icon btn-transparent-dark"><i data-feather="trash-2"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                            </div>
+                                        </div>
+                                     </div>
+                                </div>
+                            </div>
+                    </div>
                     </div>
                 </div>
             </div></>
