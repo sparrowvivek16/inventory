@@ -13,8 +13,8 @@ class Login extends Component{
         this.db = firebase.firestore();
     }
     state ={
-        user : null,
-        password : null        
+        user : '',
+        password : ''        
     }
     componentDidMount(){
         if(this.storage.getToken()!=null){

@@ -8,7 +8,8 @@ export const commonService = {
     signIn,
     createUsers,
     addEmail,
-    getUsers
+    getUsers,
+    //toggleUsers
 }
 
 function signIn(user,password) {
@@ -36,4 +37,13 @@ function getUsers() {
     const getUsers = db.collection("users").get(); 
  return getUsers;
 }
+
+// function toggleUsers(id) {
+//     this.auth.ref.getUser(id,{
+//         disabled: true
+//       })
+// }
+
+
+
 

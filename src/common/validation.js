@@ -2,7 +2,7 @@ import AlertService from './service/AlertService';
 
 const alerts = new AlertService();
 
-export const validation = {
+export const validations = {
     registerValidation
 }
 

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
+import StorageService from '../common/service/StorageService';
 import firebase from '../config/firebase.Config';
-import { validation } from '../common/validation';
+import { validations } from '../common/validation';
 import ReactDatatable from '@ashvin27/react-datatable';
 import { commonService } from '../common/CommonService';
-import Switch from 'react-toggle-switch'
+import * as admin from 'firebase-admin';
 
 class Register extends Component{
     constructor(props) {
@@ -21,11 +22,12 @@ class Register extends Component{
                 confirmPassword: '',
                 role:'',
             },
-            userList:[],
-            disabled: false
+            userList:[]
+            
         };
         this.ViewInit();
         this.credentials = this.credentials.bind(this);
+        this.storage = new StorageService();
         this.auth = firebase.auth();
         this.db = firebase.firestore();
         this.alerts = new AlertService();
@@ -65,9 +67,11 @@ class Register extends Component{
               key: "action", text: "Action",className: "Action",  width: 100, align: "left" ,sortable: false,
                 cell: record => { 
                     return (
-                        <div className="action-row-td">
-                        <Switch onClick={()=>this.toggleRecord(record)} on={this.state.disabled}/>
-                        </div>
+                        <button 
+                        className="btn btn-primary btn-sm" 
+                        onClick={()=>this.toggleRecord(record)}>
+                        <i className="fa fa-toggle-off"></i>
+                        </button>
                     );
                 }
             }
@@ -75,8 +79,12 @@ class Register extends Component{
     }
 
     toggleRecord(record){
-        console.log("jkgi");
-        this.setState( {disabled: !this.state.disabled} )
+        console.log(record); 
+        let id = this.storage.getUID();
+        console.log(id); 
+        let user= this.auth.updateUser;
+        user.delete().then(()=>this.alerts.snack(`${record.email} has been deactivated`,'bg-green'))
+          .catch(err=>console.log(err));
     }
 
     credentials(event) {    
@@ -93,7 +101,7 @@ class Register extends Component{
     submits = (e) =>{
         e.preventDefault();
         const { user } = this.state;
-        if(validation.registerValidation(user)){
+        if(validations.registerValidation(user)){
         commonService.addEmail(user).then(data=>{
             if(data){
                 commonService.createUsers(user).then(data=>{ 
@@ -111,17 +119,41 @@ class Register extends Component{
 }
 }
 
-getAllUsers(){
-    commonService.getUsers()
-     .then(data => {
-         console.log(data.docs);
-         console.log(data.docs.length);
-       const datas = data.docs.map(doc => doc.data());
-       console.log(datas);
-       this.setState({
-           userList: datas
-         });
-     });
+// getAllUsers(){
+//     commonService.getUsers()
+//      .then(data => {
+//          let ogj ={}
+//          const id = data.docs.map(id =>id.id);
+//        const values = data.docs.map(values =>values.data());
+//        //ogj.push(id,values);
+//        console.log(ogj);
+//        console.log(id);
+//        console.log(values);
+//        this.setState({
+//            userList: values
+//          });
+//      });
+//      }
+
+     getAllUsers(){
+        commonService.getUsers()
+                    .then(data=> {
+                        let datas =[];
+                data.docs.forEach(doc =>{
+                    datas.push({
+                        id : doc.id,
+                        firstName: doc.data().firstName,
+                        lastName: doc.data().lastName,
+                        address: doc.data().address,
+                        phoneNumber: doc.data().phoneNumber,
+                        email: doc.data().email,
+                        role: doc.data().role
+                    });
+                    });
+                    this.setState({
+                        userList:datas
+                    });
+                }).catch(err=>console.log(err));
      }
     
    resetInput(user){
