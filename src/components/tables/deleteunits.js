@@ -3,10 +3,10 @@ import firebase from '../../config/firebase.Config';
 import AlertService from '../../common/service/AlertService';
 import ReactDatatable from '@ashvin27/react-datatable';
 
-class Editcategory extends Component{
+class Deleteunits extends Component{
     constructor(props){
         super(props);
-        this.conn = firebase.firestore().collection("category");
+        this.conn = firebase.firestore().collection("units");
         this.alerts = new AlertService();
         this.columns = [
             {
@@ -17,16 +17,9 @@ class Editcategory extends Component{
                 sortable: true,
             },
             {
-                key: "category",
-                text: "Category",
-                className: "category",
-                align: "left",
-                sortable: true,
-            },
-            {
-                key: "subcategory",
-                text: "Subcategory",
-                className: "subcategory",
+                key: "unit",
+                text: "Unit",
+                className: "unit",
                 align: "left",
                 sortable: true,
             },
@@ -40,12 +33,6 @@ class Editcategory extends Component{
                 cell: record => { 
                     return (
                         <Fragment>
-                            {/* <button
-                                className="btn btn-primary btn-sm"
-                                onClick={() => this.editRecord(record)}
-                                style={{marginRight: '5px'}}>
-                                <i className="fa fa-edit"></i>
-                            </button> */}
                             <button 
                                 className="btn btn-danger btn-sm" 
                                 onClick={() => this.deleteRecord(record)}>
@@ -60,24 +47,18 @@ class Editcategory extends Component{
             page_size: 10,
             length_menu: [10, 20, 50],
             show_filter: true,
-            show_pagination: true,
+            show_pagination: false,
             button: {
                 excel: false,
                 print: false
             }
         }
     }
-    state={
-        
-    }
-    // editRecord(record) {
-    //     console.log("Edit Record", record);
-    // }
  
     deleteRecord(record) {
         this.conn.doc(record.id).delete().then(() => {
             this.props.tableRefresh();
-            this.alerts.snack(`Subcategory ${record.subcategory} deleted`,'bg-green');  
+            this.alerts.snack(`Unit ${record.unit} deleted`,'bg-green');  
         }).catch(err => console.log(err));
     }
     render() {
@@ -95,4 +76,4 @@ class Editcategory extends Component{
 
 }
 
-export default Editcategory;
+export default Deleteunits;

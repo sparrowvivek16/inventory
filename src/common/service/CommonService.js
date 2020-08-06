@@ -6,7 +6,9 @@ const db = firebase.firestore();
 export const commonService = {
     createUsers,
     AddEmail,
-    getAllCategory
+    getAllCategory,
+    getAllUnits,
+    getAllTax
 }
 
 function AddEmail(user) {
@@ -35,6 +37,26 @@ async function getAllCategory(){
         return data;
     }
     catch (err) {
+        return console.log(err);
+    }
+}
+
+//fetch all units
+async function getAllUnits(){
+    try{
+        const data = db.collection('units').get();
+        return data;
+    }catch (err){
+        return console.log(err);
+    }
+}
+
+//fetch all tax(s)
+async function getAllTax(){
+    try{
+        const data = db.collection('tax').get();
+        return data;
+    }catch (err){
         return console.log(err);
     }
 }

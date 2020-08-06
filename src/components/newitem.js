@@ -6,7 +6,8 @@ import { validations } from '../common/validations';
 import feather from 'feather-icons';
 import { commonService } from '../common/service/CommonService';
 import { utility } from '../common/utility';
-import SelectPure from "select-pure";
+import Multiselect from 'react-widgets/lib/Multiselect'
+import 'react-widgets/dist/css/react-widgets.css';
 
 class Newitem extends Component{
     constructor(props){
@@ -23,35 +24,6 @@ class Newitem extends Component{
         
         // Activate Feather icons
         feather.replace();
-        const myOptions = [
-            {
-              label: "New York ",
-              value: "NY",
-            },
-            {
-              label: "Washington ",
-              value: "WA",
-            },
-            {
-              label: "California",
-              value: "CA",
-            },
-            {
-              label: "New Jersey",
-              value: "NJ",
-            },
-            {
-              label: "North Carolina",
-              value: "NC",
-            },
-          ];
-
-         new SelectPure(".selectTax", {
-            options:   myOptions,    
-            multiple: true, // default: false
-            autocomplete: true,
-            icon: 'fa fa-times'
-        });
 
         // fetch all category and assign to select box
         commonService.getAllCategory().then(data => {
@@ -60,8 +32,26 @@ class Newitem extends Component{
             justCategory.forEach(jCat =>{
                 document.querySelector('select#category').innerHTML += 
                 `<option value=${jCat}>${utility.capitalizeFirstLetter(jCat)}</option>`;
-            });           
-        });
+            });
+        }).catch(err=>console.log(err));
+
+        //fetch all units and assign to slect box
+        commonService.getAllUnits().then(data=>{
+            data.docs.forEach(val =>{
+                document.querySelector('select#unit').innerHTML += 
+                `<option value=${val.data().unit}>${utility.capitalizeFirstLetter(val.data().unit)}</option>`;
+            });       
+        }).catch(err=>console.log(err));
+
+        //fetch all taxes
+        commonService.getAllTax().then(data => {
+           this.setState({
+               ...this.state,
+               tax: data.docs.map(tax =>tax.data())
+           })
+        }).catch(err=>console.log(err));
+        
+       
     }
     state = {     
         item: {}
@@ -91,7 +81,7 @@ class Newitem extends Component{
 
     setSubCategory = (cat) =>{
         commonService.getAllCategory().then(data => {
-            document.querySelector('select#subcategory').innerHTML ='';
+            document.querySelector('select#subcategory').innerHTML ='<option value="0">--select--</option>';
             data.forEach(dat=> {
                 if(dat.data().name === cat){
                     document.querySelector('select#subcategory').innerHTML += 
@@ -100,11 +90,15 @@ class Newitem extends Component{
             });
         })
         .catch(err=> console.log(err));
-        
     }
 
-    render(){
-        
+    render(){        
+        let ListItem = ({ item }) => (
+            <span>
+              {item.percentage}
+              <strong>{"  %"}</strong>
+            </span>
+          );
         return(
             <>
             <header className="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
@@ -161,10 +155,7 @@ class Newitem extends Component{
                                                 <div className="form-group">
                                                     <label htmlFor="unit">Unit</label>
                                                     <select className="form-control" id="unit" onChange={this.getFormData}>
-                                                        <option value="0">--select--</option>
-                                                        <option value="grain">KG</option>
-                                                        <option value="pluses">CC</option>
-                                                        <option value="pickles">Ton</option>                                                        
+                                                        <option value="0">--select--</option>               
                                                     </select>
                                                 </div>
                                             </div>
@@ -197,12 +188,17 @@ class Newitem extends Component{
                                                     <label htmlFor="mrp">Maxmimum Retail Price</label>
                                                     <input className="form-control" id="mrp" type="number" step="0.01" placeholder="eg: 38.00" onChange={this.getFormData}/>
                                                 </div>
-                                            </div>
-                                            {/* Tax needs to be added separately */}
+                                            </div>                                            
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="tax">Tax(s)</label>
-                                                    <span className="selectTax" id="tax"></span>
+                                                    <Multiselect
+                                                    data={this.state.tax}
+                                                    textField='percentage'
+                                                    filter='contains'
+                                                    groupBy='name'
+                                                    itemComponent={ListItem}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="col-md-6">

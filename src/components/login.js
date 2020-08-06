@@ -31,7 +31,7 @@ class Login extends Component{
         e.preventDefault();
         if(this.state.user && this.state.password !== null){           
             this.auth.signInWithEmailAndPassword(this.state.user,this.state.password).then( credt => {
-                console.log(credt.user);       
+                //console.log(credt.user);       
                 this.storage.setUID(credt.user.uid);
                 this.storage.setToken(credt.user.l);
                 this.props.history.push('/dashboard');
