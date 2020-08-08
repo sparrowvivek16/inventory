@@ -8,7 +8,8 @@ export const commonService = {
     AddEmail,
     getAllCategory,
     getAllUnits,
-    getAllTax
+    getAllTax,
+    barCodeChk
 }
 
 function AddEmail(user) {
@@ -33,8 +34,7 @@ function createUsers(user) {
 // fetch all category
 async function getAllCategory(){
     try {
-        const data = await db.collection('category').get();
-        return data;
+        return await db.collection('category').get();
     }
     catch (err) {
         return console.log(err);
@@ -44,8 +44,7 @@ async function getAllCategory(){
 //fetch all units
 async function getAllUnits(){
     try{
-        const data = db.collection('units').get();
-        return data;
+        return await db.collection('units').get();
     }catch (err){
         return console.log(err);
     }
@@ -54,10 +53,19 @@ async function getAllUnits(){
 //fetch all tax(s)
 async function getAllTax(){
     try{
-        const data = db.collection('tax').get();
-        return data;
+        return await db.collection('tax').get();         
     }catch (err){
         return console.log(err);
     }
+}
+
+//check barcode exists or not
+async function barCodeChk(val){ 
+    try{
+        return await db.collection('items').where('barcode','==',val).get();   
+    }catch(err){
+        return console.log(err);
+    }         
+        
 }
 

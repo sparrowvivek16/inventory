@@ -44,13 +44,14 @@ function registerValidation(values) {
     }
 }
 
-//add item inventory validations
+//add item inventory validations (required field)
 function addItemValidation(values){    
+    
     if(!values.particulars){
         alerts.snack('Item particular is missing.','bg-red');
     }else if(!values.category){
         alerts.snack('Please Select a category','bg-red');
-    }else if(!values.subcategory){
+    }else if(!values.subcategory || values.subcategory==='' || values.subcategory==='0'){
         alerts.snack('Please Select a Sub-category','bg-red');
     }else if(!values.qty){
         alerts.snack('Enter the available quantity','bg-red');
@@ -62,7 +63,7 @@ function addItemValidation(values){
         alerts.snack('Please enter your manufacturing price','bg-red');
     }else if(!values.mrp){
         alerts.snack('Maximum Retail Price is required','bg-red');
-    }else if(!values.tax){
+    }else if(!values.taxes || values.taxes.length<1){
         alerts.snack('Please Select your tax(s)','bg-red');
     }else{
         return true;

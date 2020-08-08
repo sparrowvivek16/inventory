@@ -63,7 +63,7 @@ class Settings extends Component{
                     }).then(()=> {
                         //assign the new category to the select box
                         this.categorySettings();
-                        this.alerts.snack('New category and a single sub catergory added.','green');
+                        this.alerts.snack('New category and a single sub catergory added.','bg-green');
 
                         //reset the state and form
                         this.setState({ 
