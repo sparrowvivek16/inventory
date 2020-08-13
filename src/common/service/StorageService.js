@@ -7,29 +7,30 @@ class StorageService {
     }
 
     setToken(token) {
-        sessionStorage.setItem(GLOBAL_VARIABLE.SESSION_KEY,token);
+        sessionStorage.setItem(GLOBAL_VARIABLE.SESSION_KEY, token);
     }
-    
-    getUID(){
+
+    getUID() {
         return sessionStorage.getItem(GLOBAL_VARIABLE.USER_ID);
     }
 
-    setUID(id){
-        sessionStorage.setItem(GLOBAL_VARIABLE.USER_ID,id);
+    setUID(id) {
+        sessionStorage.setItem(GLOBAL_VARIABLE.USER_ID, id);
     }
 
     getRole() {
         return sessionStorage.getItem(GLOBAL_VARIABLE.ROLE_KEY);
     }
 
-    setRole(role){
+    setRole(role) {
         sessionStorage.setItem(GLOBAL_VARIABLE.ROLE_KEY, role);
     }
 
-    logOut(){
+    logOut() {
         // remove user from local storage to log user out        
         sessionStorage.removeItem(GLOBAL_VARIABLE.SESSION_KEY);
         sessionStorage.removeItem(GLOBAL_VARIABLE.USER_ID);
+        sessionStorage.removeItem(GLOBAL_VARIABLE.ROLE_KEY);
     }
 }
 

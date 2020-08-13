@@ -8,11 +8,12 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "feather-icons": "^4.28.0",
-    "firebase": "^7.15.5",
+    "firebase": "^7.17.1",
     "firebase-admin": "^9.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
+    "react-s-alert": "^1.4.1",
     "react-scripts": "3.4.1",
     "react-toggle-switch": "^3.0.4"
   },
