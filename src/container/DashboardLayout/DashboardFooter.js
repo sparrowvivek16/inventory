@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import feather from 'feather-icons';
+import { Link } from 'react-router-dom';
 
 class DashboardFooter extends Component{   
     componentDidMount(){
@@ -13,9 +14,9 @@ class DashboardFooter extends Component{
                         <div className="row">
                             <div className="col-md-6 small">Copyright &#xA9; Radi & Sparrow 2020</div>
                             <div className="col-md-6 text-md-right small">
-                                <a href="#!">Privacy Policy</a>
+                            <Link to="/privacyPolicy">Privacy Policy</Link>
                                 &#xB7;
-                                <a href="#!">Terms &amp; Conditions</a>
+                                <Link to="/termsAndConditions">Terms &amp; Conditions</Link>
                             </div>
                         </div>
                     </div>

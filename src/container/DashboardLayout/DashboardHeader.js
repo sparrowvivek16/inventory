@@ -65,14 +65,14 @@ class DashboardHeader extends Component {
                                 </div>
                             </h6>
                             <div className="dropdown-divider"></div>
-                            <a className="dropdown-item" onClick={this.account}>
+                            <div className="dropdown-item" onClick={this.account}>
                                 <div className="dropdown-item-icon"><i data-feather="settings"></i></div>
                             Account
-                        </a>
-                            <a className="dropdown-item" onClick={this.logout}>
+                        </div>
+                        <div className="dropdown-item" onClick={this.logout}>
                                 <div className="dropdown-item-icon"><i data-feather="log-out"></i></div>
                             Logout
-                        </a>
+                            </div>
                         </div>
                     </li>
                 </ul>

@@ -13,7 +13,6 @@ class DashboardSidebar extends Component {
     }
 
     componentDidMount() {
-        const { isAdmin } = this.state;
         let role = this.storageService.getRole();
         if (role === "admin") {
             this.setState({ isAdmin: true });

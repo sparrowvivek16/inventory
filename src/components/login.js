@@ -3,6 +3,8 @@ import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
 import { commonService } from '../common/CommonService';
+import { validations } from '../common/validation';
+import { Link } from 'react-router-dom';
 
 class Login extends Component {
     constructor(props) {
@@ -31,28 +33,30 @@ class Login extends Component {
 
     submits = (e) => {
         e.preventDefault();
-        const { user, password, role } = this.state;
-        if (user && password !== null) {
-            commonService.checkUser(user).then((value) => {
-                value.forEach((doc) => {
-                    let status = doc.data().status;
-                    const role = doc.data().role;
-                    if (status !== true) {
-                        this.alerts.error(`${user} Has been blocked by the administrator`);
-                    }
-                    else {
-                        commonService.signIn(user, password).then((credt) => {
-                            this.storage.setUID(credt.user.uid);
-                            this.storage.setToken(credt.user.l);
-                            this.storage.setRole(role);
-                            this.props.history.push('/dashboard');
-                        }).catch(err => this.alerts.snack(err.message, 'red'));
-                    }
-                });
-            }).catch(err => this.alerts.snack(err.message, 'red'));
+        const { user, password } = this.state;
+        if (validations.loginValidation(user,password)) {
+            commonService.checkUser(user)
+                .then((value) => {
+                    value.forEach((doc) => {
+                        let status = doc.data().status;
+                        const role = doc.data().role;
+                        if (status !== true) {
+                            this.alerts.error(`${user} has been blocked by the administrator`);
+                        }
+                        else {
+                            commonService.signIn(user, password)
+                                .then((credt) => {
+                                    this.storage.setUID(credt.user.uid);
+                                    this.storage.setToken(credt.user.l);
+                                    this.storage.setRole(role);
+                                    this.props.history.push('/dashboard');
+                                })
+                                .catch(err => this.alerts.error(err.message));
+                        }
+                    });
+                })
+                .catch(err => this.alerts.error(err.message));
 
-        } else {
-            this.alerts.snack('All fields are required.', 'red');
         }
     }
     render() {
@@ -77,7 +81,7 @@ class Login extends Component {
 
                                                 <div className="form-group">
                                                     <label className="small mb-1" htmlFor="inputEmailAddress">Email</label>
-                                                    <input className="form-control py-4" id="user" type="email" onChange={this.credentials} />
+                                                    <input className="form-control py-4" id="user" type="text" onChange={this.credentials} />
                                                 </div>
 
                                                 <div className="form-group">
@@ -93,14 +97,14 @@ class Login extends Component {
                                                 </div>
 
                                                 <div className="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                    <a className="small" href="auth-password-basic.html">Forgot Password?</a>
+                                                <Link to="/forgetPassword">Forgot Password?</Link>
                                                     <button className="btn btn-primary" type="submit">Login</button>
                                                 </div>
                                             </form>
                                         </div>
-                                        <div className="card-footer text-center">
+                                        {/* <div className="card-footer text-center">
                                             <div className="small"><a href="auth-register-basic.html">Need an account? Sign up!</a></div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -113,9 +117,9 @@ class Login extends Component {
                             <div className="row">
                                 <div className="col-md-6 small">Copyright &#xA9; Radi & Sparrow 2020</div>
                                 <div className="col-md-6 text-md-right small">
-                                    <a href="#!">Privacy Policy</a>
+                                <Link to="/privacyPolicy">Privacy Policy</Link>
                         &#xB7;
-                        <a href="#!">Terms &amp; Conditions</a>
+                        <Link to="/termsAndConditions">Terms &amp; Conditions</Link>
                                 </div>
                             </div>
                         </div>

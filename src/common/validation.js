@@ -3,57 +3,60 @@ import AlertService from './service/AlertService';
 const alerts = new AlertService();
 
 export const validations = {
+    loginValidation,
     registerValidation,
     profileValidation,
+    updatePassword,
+    forgetPasswordValidation
 }
 
 
 //Registration
 function registerValidation(values) {
     if (!values.firstName) {
-        alerts.snack('First Name is required.', 'red');
+        alerts.error('First Name is required.');
     }
     else if (!values.lastName) {
-        alerts.snack('Last Name is required.', 'red');
+        alerts.error('Last Name is required.');
     }
     else if (!values.address) {
-        alerts.snack('Address is required.', 'red');
+        alerts.error('Address is required.');
     }
     else if (!values.phoneNumber) {
-        alerts.snack('Phone Number is required.', 'red');
+        alerts.error('Phone Number is required.');
     }
     else if (isNaN(values.phoneNumber)) {
-        alerts.snack('Enter Number.', 'red');
+        alerts.error('Enter Number.');
     }
     else if (!values.email) {
-        alerts.snack('Email is required.', 'red');
+        alerts.error('Email is required.');
     }
     else if (values.email && !ValidateEmail(values.email)) {
-        alerts.snack('Email is not valid', 'red');
+        alerts.error('Email is not valid');
     }
     else if ((!values.role) || (values.role && values.role === '-1')) {
-        alerts.snack("Select role", "red");
+        alerts.error("Select role");
     }
     else if (!values.password) {
-        alerts.snack('Password  is required.', 'red');
+        alerts.error('Password  is required.');
     }
     else if ((values.password.trim().length <= 9)) {
-        alerts.snack('Password must contain at least 10 characters.', 'red');
+        alerts.error('Password must contain at least 10 characters.');
     }
     else if (values.password.search(/[0-9]/) < 0) {
-        alerts.snack('Your password must contain at least one digit.', 'red');
+        alerts.error('Your password must contain at least one digit.');
     }
     else if (values.password.search(/[a-zA-Z]/i) < 0) {
-        alerts.snack('Your password must contain at least one letter.', 'red');
+        alerts.error('Your password must contain at least one letter.');
     }
     else if (values.password.search(/[!@#$%^&*(_+|>?~,./`;':|]/) < 0) {
-        alerts.snack('Your password must contain at least one special charcter.', 'red');
+        alerts.error('Your password must contain at least one special charcter.');
     }
     else if (!values.confirmPassword) {
-        alerts.snack('Confirm Password is required.', 'red');
+        alerts.error('Confirm Password is required.');
     }
     else if (values.password !== values.confirmPassword) {
-        alerts.snack("Password and Confirm Password don't match.", "red");
+        alerts.error("Password and Confirm Password don't match.");
     }
     else {
         return true;
@@ -71,22 +74,95 @@ function ValidateEmail(mail) {
 
 function profileValidation(values) {
     if (!values.firstName) {
-        alerts.snack('First Name is required.', 'red');
+        alerts.error('First Name is required.');
     }
     else if (!values.lastName) {
-        alerts.snack('Last Name is required.', 'red');
+        alerts.error('Last Name is required.');
     }
     else if (!values.address) {
-        alerts.snack('Address is required.', 'red');
+        alerts.error('Address is required.');
     }
     else if (!values.phoneNumber) {
-        alerts.snack('Phone Number is required.', 'red');
+        alerts.error('Phone Number is required.');
     }
     else if (isNaN(values.phoneNumber)) {
-        alerts.snack('Enter Number.', 'red');
+        alerts.error('Enter Number.');
     }
     else {
         return true;
     }
+}
 
+function updatePassword(values) {
+    if (!values.currentPassword) {
+        alerts.error('Current Password is required');
+    }
+    else if ((values.currentPassword.trim().length <= 9)) {
+        alerts.error('Password must contain at least 10 characters.');
+    }
+    else if (!values.newPassword) {
+        alerts.error('NewPassword is required');
+    }
+    else if (values.oldPassword === values.newPassword) {
+        alerts.error('Old password and New Password are same');
+    }
+    else if ((values.newPassword.trim().length <= 9)) {
+        alerts.error('Password must contain at least 10 characters.');
+    }
+    else if (values.newPassword.search(/[0-9]/) < 0) {
+        alerts.error('Your password must contain at least one digit');
+    }
+    else if (values.newPassword.search(/[a-zA-Z]/i) < 0) {
+        alerts.error('Your password must contain at least one letter');
+    }
+    else if (values.newPassword.search(/[!@#$%^&*(_+|<>?~,``./'';:|)]/) < 0) {
+        alerts.error('Your password must contain at least one special charcter');
+    }
+    else if (values.newPassword !== values.confirmPassword) {
+        alerts.error("New Password and Confirm Password don't match");
+    }
+    else if (!values.confirmPassword) {
+        alerts.error('Confirm Password is required');
+    }
+    else if (values.currentPassword === values.confirmPassword) {
+        alerts.error("New Password and Current Password are same");
+    }
+    else {
+        return true;
+    }
+}
+
+function loginValidation(user, password) {
+    if (!user) {
+        alerts.error('Email is required');
+    }
+    else if (user && user.length <= 5) {
+        alerts.error('Email must contain at least 6 characters');
+    }
+    else if (user && !ValidateEmail(user)) {
+        alerts.error('Email is not valid');
+    }
+    else if (!password) {
+        alerts.error('Password is required');
+    }
+    else if (password && password.length <= 9) {
+        alerts.error('Password must contain at least 12 characters');
+    }
+    else {
+        return true;
+    }
+}
+function forgetPasswordValidation(email) {
+    if (!email) {
+        alerts.error('Email is required');
+    }
+    else if (email && email.length <= 5) {
+        alerts.error('Email must contain at least 6 characters');
+    }
+    else if (email && !ValidateEmail(email)) {
+        alerts.error('Email is not valid');
+    }
+    else {
+        return true;
+    }
 }

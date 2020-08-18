@@ -17,26 +17,32 @@ const DashboardLayout = React.lazy(() => import('./container/DashboardLayout'));
 
 // Pages
 const Login = React.lazy(() => import('./components/login'));
+const ForgetPassword = React.lazy(() => import('./components/forgetPassword'));
+const TermsAndConditions = React.lazy(() => import('./components/termsandConditions'));
+const PrivacyPolicy = React.lazy(() => import('./components/privacyPolicy'));
 
-class App extends Component{  
+class App extends Component {
 
-  render(){
-      return (
-        <div>
+  render() {
+    return (
+      <div>
         <BrowserRouter>
-        <React.Suspense fallback={loading()}>
-          <div className="Section">        
-          <Switch>
-            <Route exact path='/login' component={Login}/>          
-            <Route path="/" name="Layout" render={props => <DashboardLayout {...props}/>} />
-          </Switch> 
-          </div>
+          <React.Suspense fallback={loading()}>
+            <div className="Section">
+              <Switch>
+                <Route exact path='/login' component={Login} />
+                <Route exact path='/forgetPassword' component={ForgetPassword} />
+                <Route exact path='/privacyPolicy' component={PrivacyPolicy} />
+                <Route exact path='/termsAndConditions' component={TermsAndConditions} />
+                <Route path="/" name="Layout" render={props => <DashboardLayout {...props} />} />
+              </Switch>
+            </div>
           </React.Suspense>
         </BrowserRouter>
-         <Alert stack={{limit: 3}} />
-         </div>
-      );  
-    }
+        <Alert stack={{ limit: 3 }} />
+      </div>
+    );
+  }
 }
 
 export default App;

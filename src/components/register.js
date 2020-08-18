@@ -87,9 +87,12 @@ class Register extends Component {
         let id = record.id;
         commonService.toggleUsers(tempRec, id).then(data => {
             this.reloadPage();
-            this.alerts.snack(`${email} deactivated successfully`, 'bg-green');
-
-        }).catch(err => this.alerts.snack(err));
+            if (tempRec === false) {
+                this.alerts.success(`${email} deactivated successfully`);
+            } else {
+                this.alerts.success(`${email} activated successfully`);
+            }
+        }).catch(err => this.alerts.error(err));
     }
 
     credentials(event) {
@@ -103,7 +106,7 @@ class Register extends Component {
         });
     }
 
-    submits = (e) => {
+    registration = (e) => {
         e.preventDefault();
         const { user } = this.state;
         if (validations.registerValidation(user)) {
@@ -113,12 +116,12 @@ class Register extends Component {
                     commonService.createUsers(user, id)
                         .then(data =>
                             this.alerts.success('Successfully Registered'))
-                        .catch(err => this.alerts.snack(err, 'bg-red'));
+                        .catch(err => this.alerts.error(err));
                     this.reloadPage();
                 } else {
-                    this.alerts.snack('Error in adding user email', 'bg-red')
+                    this.alerts.error('Error in adding user email')
                 }
-            }).catch(err => this.alerts.snack(err));
+            }).catch(err => this.alerts.error(err));
         }
     }
 
@@ -153,7 +156,7 @@ class Register extends Component {
             this.setState({
                 userList: datas
             });
-        }).catch(err => this.alerts.snack(err));
+        }).catch(err => this.alerts.error(err));
     }
 
     resetInput(user) {
@@ -172,8 +175,8 @@ class Register extends Component {
     }
 
     tableAction() {
-            this.getAllUsers();
-       
+        this.getAllUsers();
+
     }
 
     componentDidMount() {
@@ -206,7 +209,7 @@ class Register extends Component {
                                     <div className="card shadow-lg border-0 rounded-lg mt-3">
                                         <div className="card-header justify-content-center"><h3 className="font-weight-light my-4">Create Account</h3></div>
                                         <div className="card-body">
-                                            <form id="login-form" onSubmit={this.submits}>
+                                            <form id="login-form" onSubmit={this.registration}>
                                                 <div className="form-row">
                                                     <div className="col-md-6">
                                                         <div className="form-group">

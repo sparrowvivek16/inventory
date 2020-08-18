@@ -13,6 +13,7 @@ export const commonService = {
     toggleUsers,
     getProfileById,
     updateUsers,
+    updatePassword,
 }
 
 function signIn(user, password) {
@@ -59,14 +60,19 @@ function getProfileById(id) {
     return getProfileById;
 }
 
-function updateUsers(user, id) {
-    const updateUsers = db.collection("users").doc(id).update({
+function updateUsers(user, uid) {
+    const updateUsers = db.collection("users").doc(uid).update({
         firstName: user.firstName,
         lastName: user.lastName,
         address: user.address,
         phoneNumber: user.phoneNumber,
     });
     return updateUsers;
+}
+
+function updatePassword(email) {
+    const updatePassword = auth.sendPasswordResetEmail(email);
+    return updatePassword;
 }
 
 
