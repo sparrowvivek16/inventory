@@ -3,6 +3,7 @@ import firebase from '../config/firebase.Config';
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage().ref();
 
 export const commonService = {
     signIn,
@@ -14,6 +15,8 @@ export const commonService = {
     getProfileById,
     updateUsers,
     updatePassword,
+    updatePicture,
+    updateFullProfile
 }
 
 function signIn(user, password) {
@@ -74,5 +77,24 @@ function updatePassword(email) {
     const updatePassword = auth.sendPasswordResetEmail(email);
     return updatePassword;
 }
+
+async function updatePicture(image, name, metadata) {
+    return await storage.child(name).put(image, metadata)
+}
+
+function updateFullProfile(user, uid, imageUrl) {
+    const updateFullProfile = db.collection("users").doc(uid).set({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        address: user.address,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        image: imageUrl,
+    });
+    return updateFullProfile;
+}
+
 
 

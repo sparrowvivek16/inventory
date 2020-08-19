@@ -18,16 +18,20 @@ class profile extends Component {
                 email: '',
                 password: '',
                 role: '',
+                status: '',
                 currentPassword: '',
                 newPassword: '',
                 confirmPassword: '',
             },
             id: '',
             image: '',
+            imageUrl: '',
+            pic: false,
         }
         this.storage = new StorageService();
         this.alerts = new AlertService();
         this.auth = firebase.auth();
+        this.storages = firebase.storage().ref();
     }
 
 
@@ -88,6 +92,7 @@ class profile extends Component {
     setViewData(data) {
         if (data) {
             this.setState({
+                imageUrl: data.data().image,
                 user: {
                     firstName: data.data().firstName,
                     lastName: data.data().lastName,
@@ -95,7 +100,8 @@ class profile extends Component {
                     phoneNumber: data.data().phoneNumber,
                     email: data.data().email,
                     role: data.data().role,
-                }
+                    status: data.data().status,
+                },
             });
         }
     }
@@ -121,42 +127,51 @@ class profile extends Component {
         }
     }
 
-    // handleChange = (e) => {
-    //     this.setState({ image: e.target.files })
-    // }
+    handleChange = (e) => {
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        let FileSize = file.size / 1024 / 1024;
+        if (FileSize > 1) {
+            this.alerts.error('File size exceeds 1 MB');
+        } else {
+            reader.onload = () => {
+                this.setState({
+                    pic: true,
+                    image: file,
+                    imageUrl: reader.result
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 
-    // handleUpload = () => { 
-    //     const {image} = this.state;
-    //     const formData = new FormData(); 
-    //     formData.append( "myFile", image,image.name 
-    //     ); 
-    //     console.log(image); 
-    //     axios.post("api/uploadfile", formData); 
-    //   }; 
+    handleUpload = () => {
+        const { user, id, imageUrl, pic } = this.state;
+        let uid = id;
+        // let name = image.name;
+        // let metadata = { contentType: image.type }
+        // commonService.updatePicture(image, name, metadata)
+        //     .then(snapshot => { snapshot.ref.getDownloadURL(); })
+        //     // const task =this.storages.child(name).put(image,metadata)
+        //     .then(url => {
+        //        this.alerts.success('Successfully Stored image in firebase storage')
+        if (pic === true) {
+            commonService.updateFullProfile(user, uid, imageUrl)
+                .then(() => {
+                    this.alerts.success('Successfully Added')
+                })
+                .catch(err => this.alerts.error(err.message));
+        }
+        else {
+            this.alerts.error('Choose file to upload');
+        }
 
-    // handleUpload = (e) => {
-    //     e.preventDefault();
-    //     const { image } = this.state;
-    //     let profilePic = 'profilePic';
-    //     let file = image[0];
-    //     let storageRef = firebase.storage().ref(`${profilePic}/${file.name}`)
-    //     let uploadTask = storageRef.put(file)
-    //     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-    //         () => {
-    //             let downloadLink = uploadTask.snapshot.downloadURL
-    //         })
-    // }
+        // ).catch(err => this.alerts.error(err));
 
-    // showImage = () => {
-    //     let storageRef = firebase.storage().ref()
-    //     let spaceRef = storageRef.child('images/' + this.state.image[0].name)
-    //     storageRef.child('image/' + this.state.image[0].name).getDownloadURL().then((url) => {
-    //         document.getElementById('show').src = url
-    //     })
-    // }
+    };
 
     render() {
-        const { user } = this.state;
+        const { user, imageUrl } = this.state;
         return (
             <div id="layoutSidenav_content">
                 <main>
@@ -181,12 +196,10 @@ class profile extends Component {
                                     <div className="card-header">Profile Picture</div>
                                     <div className="card-body text-center">
                                         <form >
-                                            <img className="img-account-profile rounded-circle mb-2" src="https://source.unsplash.com/QAB-WJcbgJk/300x300" alt="" />
-                                            <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                                            {/* <input type="file" onChange={this.handleChange} /> */}
+                                            <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt="" />
+                                            <input type="file" onChange={this.handleChange} />
                                             <button onClick={this.handleUpload} className="btn btn-primary" type="button" >Upload new image</button>
                                             {/* <button onClick={this.showImage} type="button" >show</button> */}
-                                            <img id="show" alt="" />
                                         </form>
                                     </div>
                                 </div>

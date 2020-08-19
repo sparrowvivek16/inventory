@@ -34,7 +34,7 @@ class Login extends Component {
     submits = (e) => {
         e.preventDefault();
         const { user, password } = this.state;
-        if (validations.loginValidation(user,password)) {
+        if (validations.loginValidation(user, password)) {
             commonService.checkUser(user)
                 .then((value) => {
                     value.forEach((doc) => {
@@ -97,7 +97,7 @@ class Login extends Component {
                                                 </div>
 
                                                 <div className="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <Link to="/forgetPassword">Forgot Password?</Link>
+                                                    <Link to="/forgetPassword">Forgot Password?</Link>
                                                     <button className="btn btn-primary" type="submit">Login</button>
                                                 </div>
                                             </form>
@@ -117,7 +117,7 @@ class Login extends Component {
                             <div className="row">
                                 <div className="col-md-6 small">Copyright &#xA9; Radi & Sparrow 2020</div>
                                 <div className="col-md-6 text-md-right small">
-                                <Link to="/privacyPolicy">Privacy Policy</Link>
+                                    <Link to="/privacyPolicy">Privacy Policy</Link>
                         &#xB7;
                         <Link to="/termsAndConditions">Terms &amp; Conditions</Link>
                                 </div>
