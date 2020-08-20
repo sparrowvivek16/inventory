@@ -4,6 +4,7 @@ import { commonService } from '../common/CommonService';
 import StorageService from '../common/service/StorageService';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
+import image from '../assets/img/empty.jpg'; 
 
 class profile extends Component {
     constructor(props) {
@@ -158,7 +159,7 @@ class profile extends Component {
         if (pic === true) {
             commonService.updateFullProfile(user, uid, imageUrl)
                 .then(() => {
-                    this.alerts.success('Successfully Added')
+                    this.alerts.success('Profile pic added successfully')
                 })
                 .catch(err => this.alerts.error(err.message));
         }
@@ -196,7 +197,8 @@ class profile extends Component {
                                     <div className="card-header">Profile Picture</div>
                                     <div className="card-body text-center">
                                         <form >
-                                            <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt="" />
+                                          {imageUrl ?  <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt="" />:
+                                            <img class="img-account-profile rounded-circle mb-2" src={image} alt=""></img>}
                                             <input type="file" onChange={this.handleChange} />
                                             <button onClick={this.handleUpload} className="btn btn-primary" type="button" >Upload new image</button>
                                             {/* <button onClick={this.showImage} type="button" >show</button> */}
