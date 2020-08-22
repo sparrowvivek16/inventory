@@ -27,7 +27,7 @@ class profile extends Component {
             id: '',
             image: '',
             imageUrl: '',
-            pic: false,
+            upload:false,
         }
         this.storage = new StorageService();
         this.alerts = new AlertService();
@@ -137,7 +137,7 @@ class profile extends Component {
         } else {
             reader.onload = () => {
                 this.setState({
-                    pic: true,
+                    upload: true,
                     image: file,
                     imageUrl: reader.result
                 });
@@ -146,8 +146,18 @@ class profile extends Component {
         }
     }
 
+    clear =() =>{
+        this.reloadPage();
+        this.setState({upload:false});  
+    }
+
+    reloadPage() {
+        this.getProfileById();
+    }
+
+
     handleUpload = () => {
-        const { user, id, imageUrl, pic } = this.state;
+        const { user, id, imageUrl } = this.state;
         let uid = id;
         // let name = image.name;
         // let metadata = { contentType: image.type }
@@ -156,23 +166,17 @@ class profile extends Component {
         //     // const task =this.storages.child(name).put(image,metadata)
         //     .then(url => {
         //        this.alerts.success('Successfully Stored image in firebase storage')
-        if (pic === true) {
             commonService.updateFullProfile(user, uid, imageUrl)
                 .then(() => {
                     this.alerts.success('Profile pic added successfully')
                 })
                 .catch(err => this.alerts.error(err.message));
-        }
-        else {
-            this.alerts.error('Choose file to upload');
-        }
-
         // ).catch(err => this.alerts.error(err));
 
     };
 
     render() {
-        const { user, imageUrl } = this.state;
+        const { user, imageUrl ,upload} = this.state;
         return (
             <div id="layoutSidenav_content">
                 <main>
@@ -197,11 +201,13 @@ class profile extends Component {
                                     <div className="card-header">Profile Picture</div>
                                     <div className="card-body text-center">
                                         <form >
-                                          {imageUrl ?  <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt="" />:
+                                          {imageUrl ?  <img className="img-account-profile sbp-preview mb-2" src={imageUrl} alt="" />:
                                             <img class="img-account-profile rounded-circle mb-2" src={image} alt=""></img>}
-                                            <input type="file" onChange={this.handleChange} />
-                                            <button onClick={this.handleUpload} className="btn btn-primary" type="button" >Upload new image</button>
-                                            {/* <button onClick={this.showImage} type="button" >show</button> */}
+                                            <span class="btn btn-primary btn-file">
+                                                    Browse...<input type="file" onChange={this.handleChange}/>
+                                                </span><br/><br/>
+                                           { upload ===true && <button onClick={this.clear} class="btn btn-orange" type="button">Reset</button>}
+                                           { upload ===true &&<button onClick={this.handleUpload} class="btn btn-blue btn_upload" type="button">Upload</button>}
                                         </form>
                                     </div>
                                 </div>

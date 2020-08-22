@@ -69,8 +69,6 @@ class Login extends Component {
                         <div className="container">
                             <div className="row justify-content-center">
                                 <div className="col-lg-5">
-
-
                                     <div className="card shadow-lg border-0 rounded-lg mt-5">
                                         <div className="card-header justify-content-center">
                                             <h1 className="font-weight-light my-4 text-center">Inventory Management System</h1>

@@ -39,6 +39,7 @@ class forgetPassword extends Component {
     render() {
         const { email } = this.state;
         return (
+            <div className="bg-primary">
             <div id="layoutAuthentication">
                 <div id="layoutAuthentication_content">
                     <main>
@@ -46,7 +47,8 @@ class forgetPassword extends Component {
                             <div className="row justify-content-center">
                                 <div className="col-lg-5">
                                     <div className="card shadow-lg border-0 rounded-lg mt-5">
-                                        <div className="card-header justify-content-center"><h3 className="font-weight-light my-4">Password Recovery</h3></div>
+                                        <div className="card-header justify-content-center">
+                                            <h3 className="font-weight-light my-4">Password Recovery</h3></div>
                                         <div className="card-body">
                                             <div className="small mb-3 text-muted">Enter your email address and we will send you a link to reset your password.</div>
                                             <form id="forget-password" onSubmit={this.forgetPassword}>
@@ -70,16 +72,17 @@ class forgetPassword extends Component {
                     <footer className="footer mt-auto footer-dark">
                         <div className="container-fluid">
                             <div className="row">
-                                <div className="col-md-6 small">Copyright &#xA9; Your Website 2020</div>
+                                <div className="col-md-6 small">Copyright &#xA9; Radi & Sparrow 2020</div>
                                 <div className="col-md-6 text-md-right small">
-                                    <a href="#!">Privacy Policy</a>
-                                &#xB7;
-                                <a href="#!">Terms &amp; Conditions</a>
+                                    <Link to="/privacyPolicy">Privacy Policy</Link>
+                        &#xB7;
+                        <Link to="/termsAndConditions">Terms &amp; Conditions</Link>
                                 </div>
                             </div>
                         </div>
                     </footer>
                 </div>
+            </div>
             </div>
         )
     }

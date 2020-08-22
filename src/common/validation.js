@@ -136,17 +136,11 @@ function loginValidation(user, password) {
     if (!user) {
         alerts.error('Email is required');
     }
-    else if (user && user.length <= 5) {
-        alerts.error('Email must contain at least 6 characters');
-    }
     else if (user && !ValidateEmail(user)) {
         alerts.error('Email is not valid');
     }
     else if (!password) {
         alerts.error('Password is required');
-    }
-    else if (password && password.length <= 9) {
-        alerts.error('Password must contain at least 12 characters');
     }
     else {
         return true;
