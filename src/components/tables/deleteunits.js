@@ -35,6 +35,7 @@ class Deleteunits extends Component{
                         <Fragment>
                             <button 
                                 className="btn btn-danger btn-sm" 
+                                data-toggle="modal" data-target="#deleteUnitPop"
                                 onClick={() => this.deleteRecord(record)}>
                                 <i className="fa fa-trash"></i>
                             </button>
@@ -54,12 +55,18 @@ class Deleteunits extends Component{
             }
         }
     }
+    componentDidMount(){
+        //init the modal with dynamic values
+        this.alerts.modalInit('deleteUnitPop','Confirm your action','Are you sure to delete this unit?','deleteUnitRec');
+    }
  
     deleteRecord(record) {
-        this.conn.doc(record.id).delete().then(() => {
-            this.props.tableRefresh();
-            this.alerts.snack(`Unit ${record.unit} deleted`,'bg-green');  
-        }).catch(err => console.log(err));
+        document.getElementById('deleteUnitRec').addEventListener('click',()=>{
+            this.conn.doc(record.id).delete().then(() => {
+                this.props.tableRefresh();
+                this.alerts.snack(`Unit ${record.unit} deleted`,'bg-green');  
+            }).catch(err => console.log(err));
+        });
     }
     render() {
         return (

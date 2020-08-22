@@ -9,7 +9,8 @@ export const commonService = {
     getAllCategory,
     getAllUnits,
     getAllTax,
-    barCodeChk
+    barCodeChk,
+    getAllItems
 }
 
 function AddEmail(user) {
@@ -67,5 +68,14 @@ async function barCodeChk(val){
         return console.log(err);
     }         
         
+}
+
+//fetch all Item(s)
+async function getAllItems(){
+    try{
+        return await db.collection('items').get();         
+    }catch (err){
+        return console.log(err);
+    }
 }
 

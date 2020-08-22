@@ -61,8 +61,8 @@ function addItemValidation(values){
         alerts.snack('SKU-ID is required','bg-red');
     }else if(!values.manufactureprice){
         alerts.snack('Please enter your manufacturing price','bg-red');
-    }else if(!values.mrp){
-        alerts.snack('Maximum Retail Price is required','bg-red');
+    }else if(!values.slp){
+        alerts.snack('Selling Price is required','bg-red');
     }else if(!values.taxes || values.taxes.length<1){
         alerts.snack('Please Select your tax(s)','bg-red');
     }else{

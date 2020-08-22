@@ -35,9 +35,9 @@ class Login extends Component{
                 this.storage.setUID(credt.user.uid);
                 this.storage.setToken(credt.user.l);
                 this.props.history.push('/dashboard');
-              }).catch(err=> this.alerts.snack(err.message,'red'));
+              }).catch(err=> this.alerts.snack(err.message,'bg-red'));
         }else{
-            this.alerts.snack('All fields are required.','red');            
+            this.alerts.snack('All fields are required.','bg-red');            
         }
     }
     render(){        

@@ -48,6 +48,7 @@ class Editcategory extends Component{
                             </button> */}
                             <button 
                                 className="btn btn-danger btn-sm" 
+                                data-toggle="modal" data-target="#deleteCategoryPop"
                                 onClick={() => this.deleteRecord(record)}>
                                 <i className="fa fa-trash"></i>
                             </button>
@@ -67,18 +68,21 @@ class Editcategory extends Component{
             }
         }
     }
+    componentDidMount(){
+        //init the modal with dynamic values
+        this.alerts.modalInit('deleteCategoryPop','Confirm your action','Are you sure to delete this Subcategory?','deleteCategoryRec');
+    }
     state={
         
     }
-    // editRecord(record) {
-    //     console.log("Edit Record", record);
-    // }
  
     deleteRecord(record) {
-        this.conn.doc(record.id).delete().then(() => {
-            this.props.tableRefresh();
-            this.alerts.snack(`Subcategory ${record.subcategory} deleted`,'bg-green');  
-        }).catch(err => console.log(err));
+        document.getElementById('deleteCategoryRec').addEventListener('click',()=>{
+            this.conn.doc(record.id).delete().then(() => {
+                this.props.tableRefresh();
+                this.alerts.snack(`Subcategory ${record.subcategory} deleted`,'bg-green');  
+            }).catch(err => console.log(err));
+        });
     }
     render() {
         return (

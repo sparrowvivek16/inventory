@@ -42,7 +42,8 @@ class DeleteTax extends Component{
                         <Fragment>
                             <button 
                                 className="btn btn-danger btn-sm" 
-                                onClick={() => this.deleteRecord(record)}>
+                                onClick={() => this.deleteRecord(record)}
+                                data-toggle="modal" data-target="#deleteTaxPop">
                                 <i className="fa fa-trash"></i>
                             </button>
                         </Fragment>
@@ -61,12 +62,19 @@ class DeleteTax extends Component{
             }
         }
     }
+    componentDidMount(){
+        //init the modal with dynamic values
+        this.alerts.modalInit('deleteTaxPop','Confirm your action','Are you sure to delete this tax?','deleteTaxRec');
+    }
  
-    deleteRecord(record) {       
-        this.conn.doc(record.id).delete().then(() => {
-            this.props.tableRefresh();
-            this.alerts.snack(`Tax name ${record.name} with ${record.percentage}%  deleted`,'bg-green');  
-        }).catch(err => console.log(err));
+    deleteRecord(record) {
+        document.getElementById('deleteTaxRec').addEventListener('click',()=>{
+            this.conn.doc(record.id).delete().then(() => {
+                this.props.tableRefresh();
+                this.alerts.snack(`Tax name ${record.name} with ${record.percentage}%  deleted`,'bg-green');  
+            }).catch(err => console.log(err));
+        });
+        
     }
     render() {
         return (
