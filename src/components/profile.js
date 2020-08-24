@@ -5,6 +5,7 @@ import StorageService from '../common/service/StorageService';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import image from '../assets/img/empty.jpg'; 
+import feather from 'feather-icons';
 
 class profile extends Component {
     constructor(props) {
@@ -64,6 +65,7 @@ class profile extends Component {
 
 
     componentDidMount() {
+        feather.replace();
         this.getUserCredentials();
         let id = this.storage.getUID();
         this.setState(
@@ -178,9 +180,8 @@ class profile extends Component {
     render() {
         const { user, imageUrl ,upload} = this.state;
         return (
-            <div id="layoutSidenav_content">
-                <main>
-                    <header className="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+            <>
+            <header className="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
                         <div className="container-fluid">
                             <div className="page-header-content">
                                 <div className="row align-items-center justify-content-between pt-3">
@@ -202,13 +203,13 @@ class profile extends Component {
                                     <div className="card-body text-center">
                                         <form >
                                           {imageUrl ?  <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt=""  width="160" height="160"/>:
-                                            <img class="img-account-profile rounded-circle mb-2" src={image} alt=""></img>}
-                                             <div class="small font-italic text-muted mb-4">
-                                            <span class="btn btn-primary btn-file">
+                                            <img className="img-account-profile rounded-circle mb-2" src={image} alt=""></img>}
+                                             <div className="small font-italic text-muted mb-4">
+                                            <span className="btn btn-primary btn-file">
                                                     Browse...<input type="file" onChange={this.handleChange}/>
                                                 </span><br/></div>
-                                           { upload ===true && <button onClick={this.clear} class="btn btn-orange" type="button">Reset</button>}
-                                           { upload ===true &&<button onClick={this.handleUpload} class="btn btn-blue btn_upload" type="button">Upload</button>}
+                                           { upload ===true && <button onClick={this.clear} className="btn btn-orange" type="button">Reset</button>}
+                                           { upload ===true &&<button onClick={this.handleUpload} className="btn btn-blue btn_upload" type="button">Upload</button>}
                                         </form>
                                     </div>
                                 </div>
@@ -287,8 +288,7 @@ class profile extends Component {
                             </div>
                         </div>
                     </div>
-                </main>
-            </div>
+               </>
         )
     }
 }

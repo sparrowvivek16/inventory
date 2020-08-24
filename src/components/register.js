@@ -5,7 +5,8 @@ import firebase from '../config/firebase.Config';
 import { validations } from '../common/validation';
 import ReactDatatable from '@ashvin27/react-datatable';
 import { commonService } from '../common/CommonService';
-import Switch from 'react-toggle-switch'
+import Switch from 'react-toggle-switch';
+import feather from 'feather-icons';
 
 class Register extends Component {
     constructor(props) {
@@ -181,6 +182,7 @@ class Register extends Component {
 
     componentDidMount() {
         this.getAllUsers();
+        feather.replace();
     }
 
     render() {

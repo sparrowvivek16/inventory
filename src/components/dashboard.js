@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
+import feather from 'feather-icons';
 
 class Dashboard extends Component{
 
@@ -18,6 +19,7 @@ class Dashboard extends Component{
         if(this.storage.getToken()==null){
             this.props.history.push('/login');
         }
+        feather.replace();
     }
 
     render(){        
