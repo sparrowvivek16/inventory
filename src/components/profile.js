@@ -203,9 +203,10 @@ class profile extends Component {
                                         <form >
                                           {imageUrl ?  <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt=""  width="160" height="160"/>:
                                             <img class="img-account-profile rounded-circle mb-2" src={image} alt=""></img>}
+                                             <div class="small font-italic text-muted mb-4">
                                             <span class="btn btn-primary btn-file">
                                                     Browse...<input type="file" onChange={this.handleChange}/>
-                                                </span><br/><br/>
+                                                </span><br/><br/></div>
                                            { upload ===true && <button onClick={this.clear} class="btn btn-orange" type="button">Reset</button>}
                                            { upload ===true &&<button onClick={this.handleUpload} class="btn btn-blue btn_upload" type="button">Upload</button>}
                                         </form>
