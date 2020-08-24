@@ -201,7 +201,7 @@ class profile extends Component {
                                     <div className="card-header">Profile Picture</div>
                                     <div className="card-body text-center">
                                         <form >
-                                          {imageUrl ?  <img className="img-account-profile sbp-preview mb-2" src={imageUrl} alt="" />:
+                                          {imageUrl ?  <img className="img-account-profile rounded-circle mb-2" src={imageUrl} alt=""  width="160" height="160"/>:
                                             <img class="img-account-profile rounded-circle mb-2" src={image} alt=""></img>}
                                             <span class="btn btn-primary btn-file">
                                                     Browse...<input type="file" onChange={this.handleChange}/>

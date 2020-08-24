@@ -104,7 +104,7 @@ class DashboardHeader extends Component {
                     </li> */}
                     <li className="nav-item dropdown no-caret mr-2 dropdown-user">
                         <a className="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="#!" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {imageUrl ?   <img className="dropdown-user-img" src={imageUrl} alt="user img" />:
+                        {imageUrl ?   <img className="img-fluid" src={imageUrl} alt="user img" />:
                             <img className="dropdown-user-img" src={image} alt="user img" />}</a>
                         <div className="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownUserImage">
                             <h6 className="dropdown-header d-flex align-items-center">
