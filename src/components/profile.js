@@ -206,7 +206,7 @@ class profile extends Component {
                                              <div class="small font-italic text-muted mb-4">
                                             <span class="btn btn-primary btn-file">
                                                     Browse...<input type="file" onChange={this.handleChange}/>
-                                                </span><br/><br/></div>
+                                                </span><br/></div>
                                            { upload ===true && <button onClick={this.clear} class="btn btn-orange" type="button">Reset</button>}
                                            { upload ===true &&<button onClick={this.handleUpload} class="btn btn-blue btn_upload" type="button">Upload</button>}
                                         </form>
