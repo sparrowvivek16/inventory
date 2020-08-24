@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { validations } from '../common/validation';
-import { commonService } from '../common/CommonService';
+import { commonService } from '../common/service/CommonService';
 import StorageService from '../common/service/StorageService';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';

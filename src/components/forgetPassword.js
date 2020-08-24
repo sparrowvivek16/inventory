@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { validations } from '../common/validation';
 import firebase from '../config/firebase.Config';
-import { commonService } from '../common/CommonService';
+import { commonService } from '../common/service/CommonService';
 import AlertService from '../common/service/AlertService';
 
 class forgetPassword extends Component {

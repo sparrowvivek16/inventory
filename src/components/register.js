@@ -4,7 +4,7 @@ import StorageService from '../common/service/StorageService';
 import firebase from '../config/firebase.Config';
 import { validations } from '../common/validation';
 import ReactDatatable from '@ashvin27/react-datatable';
-import { commonService } from '../common/CommonService';
+import { commonService } from '../common/service/CommonService';
 import Switch from 'react-toggle-switch';
 import feather from 'feather-icons';
 

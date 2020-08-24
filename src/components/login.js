@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
-import { commonService } from '../common/CommonService';
+import { commonService } from '../common/service/CommonService';
 import { validations } from '../common/validation';
 import { Link } from 'react-router-dom';
 

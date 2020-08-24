@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import firebase from '../../config/firebase.Config';
 import StorageService from '../../common/service/StorageService';
-import { commonService } from '../../common/CommonService';
+import { commonService } from '../../common/service/CommonService';
 import image from '../../assets/img/empty.jpg'; 
 
 class DashboardHeader extends Component {
