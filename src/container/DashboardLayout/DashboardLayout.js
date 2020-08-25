@@ -8,6 +8,7 @@ const DashboardFooter = React.lazy(() => import('./DashboardFooter'));
 const DashboardHeader = React.lazy(() => import('./DashboardHeader'));
 
 class DashboardLayout extends Component{
+    
 
     // Click to collapse responsive sidebar
     overlayClick(){

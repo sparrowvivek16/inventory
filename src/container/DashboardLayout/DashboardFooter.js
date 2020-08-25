@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import feather from 'feather-icons';
 import { Link } from 'react-router-dom';
 
 class DashboardFooter extends Component{   
-    componentDidMount(){
-        // Activate Feather icons
-        feather.replace();
-    } 
+    
     render(){
         return (
             <footer className="footer mt-auto footer-light">

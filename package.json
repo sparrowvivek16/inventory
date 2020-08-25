@@ -15,7 +15,8 @@
     "react-router-dom": "^5.2.0",
     "react-s-alert": "^1.4.1",
     "react-scripts": "^3.4.3",
-    "react-toggle-switch": "^3.0.4"
+    "react-toggle-switch": "^3.0.4",
+    "react-widgets": "^4.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

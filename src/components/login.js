@@ -3,7 +3,7 @@ import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
 import { commonService } from '../common/service/CommonService';
-import { validations } from '../common/validation';
+import { validations } from '../common/validations';
 import { Link } from 'react-router-dom';
 
 class Login extends Component {

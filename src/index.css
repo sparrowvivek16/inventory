@@ -20503,20 +20503,36 @@ pre[class*=language-] {
 .snackbar{
   width: 300px;
   padding: 20px;
+  left: 75%;
   position: fixed;
-  left: 85%;
-  margin-left: -120px;
   top: 0;
   border-radius: 5px;
   box-shadow: 1px 3px 5px rgba(0,0,0,0.2);
   background: #ff6565;
   text-align: center;
+  font-size: 15px;
   color: #fff;
-  margin-top: -100%;
+  margin-top: -100%;  
   transition: all 0.2s;
 }
+
 .snackbar.active{
-  margin-top: 10px;
+  margin-top: 68px;
+}
+
+.snackclose{
+  margin-left: 15px;
+  color: black;  
+  float: right; 
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .snackbar {
+   left: 5%;
+    width: 90vw;
+  }
 }
 
 .header{

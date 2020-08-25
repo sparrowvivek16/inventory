@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AlertService from '../common/service/AlertService';
 import StorageService from '../common/service/StorageService';
 import firebase from '../config/firebase.Config';
-import { validations } from '../common/validation';
+import { validations } from '../common/validations';
 import ReactDatatable from '@ashvin27/react-datatable';
 import { commonService } from '../common/service/CommonService';
 import Switch from 'react-toggle-switch';

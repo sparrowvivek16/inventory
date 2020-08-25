@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import AlertService from '../common/service/AlertService';
 import firebase from '../config/firebase.Config';
 import StorageService from '../common/service/StorageService';
 import feather from 'feather-icons';
@@ -7,18 +6,18 @@ import feather from 'feather-icons';
 class Dashboard extends Component{
 
     constructor(props){
-        super(props);
-        this.alerts = new AlertService();
+        super(props);      
         this.storage = new StorageService();
-        this.auth = firebase.auth();
-        this.db = firebase.firestore();
+        this.auth = firebase.auth();      
     }
-
    
     componentDidMount(){
+        //check if session is available, if not redirect to login
         if(this.storage.getToken()==null){
             this.props.history.push('/login');
         }
+        
+        // Activate Feather icons
         feather.replace();
     }
 

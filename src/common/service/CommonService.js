@@ -1,4 +1,3 @@
-
 import firebase from '../../config/firebase.Config';
 
 const auth = firebase.auth();
@@ -16,7 +15,12 @@ export const commonService = {
     updateUsers,
     updatePassword,
     updatePicture,
-    updateFullProfile
+    updateFullProfile,
+    getAllCategory,
+    getAllUnits,
+    getAllTax,
+    barCodeChk,
+    getAllItems
 }
 
 function signIn(user, password) {
@@ -96,5 +100,49 @@ function updateFullProfile(user, uid, imageUrl) {
     return updateFullProfile;
 }
 
+// fetch all category
+async function getAllCategory(){
+    try {
+        return await db.collection('category').get();
+    }
+    catch (err) {
+        return console.log(err);
+    }
+}
 
+//fetch all units
+async function getAllUnits(){
+    try{
+        return await db.collection('units').get();
+    }catch (err){
+        return console.log(err);
+    }
+}
 
+//fetch all tax(s)
+async function getAllTax(){
+    try{
+        return await db.collection('tax').get();         
+    }catch (err){
+        return console.log(err);
+    }
+}
+
+//check barcode exists or not
+async function barCodeChk(val){ 
+    try{
+        return await db.collection('items').where('barcode','==',val).get();   
+    }catch(err){
+        return console.log(err);
+    }         
+        
+}
+
+//fetch all Item(s)
+async function getAllItems(){
+    try{
+        return await db.collection('items').get();         
+    }catch (err){
+        return console.log(err);
+    }
+}

@@ -20,9 +20,8 @@ class DashboardHeader extends Component {
         this.storage = new StorageService();
     }
 
-
-    logout = () => {
-        this.auth.signOut().then(() => {
+    logout = () =>{
+        this.auth.signOut().then(() =>{
             this.storage.logOut();
             this.props.history.push('/login');
         }).catch(err => console.log(err));
