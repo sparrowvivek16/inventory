@@ -11,7 +11,8 @@ export const validations = {
     loginValidation,
     profileValidation,
     updatePassword,
-    forgetPasswordValidation
+    forgetPasswordValidation,
+    registerCustomerValidation
 }
 
 //Registration
@@ -281,3 +282,48 @@ function newTaxValid(val,sec){
         }
     }
 }
+
+
+function registerCustomerValidation(values){
+    if (!values.name) {
+        alerts.error('Name is required.');
+    }
+    else if (!values.company) {
+        alerts.error('Company is required.');
+    }
+    else if (!values.address) {
+        alerts.error('Address is required.');
+    }
+    else if (!values.billingAddress) {
+        alerts.error('Billing Address is required.');
+    }
+    else if (!values.landLine) {
+        alerts.error('Land Line is required.');
+    }
+    else if (isNaN(values.landLine)) {
+        alerts.error('Enter Number.');
+    }
+    else if (!values.mobileNumber) {
+        alerts.error('Mobile Number is required.');
+    }
+    else if (isNaN(values.mobileNumber)) {
+        alerts.error('Enter Number.');
+    }
+    else if (!values.email) {
+        alerts.error('Email is required.');
+    }
+    else if (values.email && !ValidateEmail(values.email)) {
+        alerts.error('Email is not valid');
+    }
+    else if (!values.gstNum) {
+        alerts.error("GST Num is required.");
+    }
+    else if (!values.remarks) {
+        alerts.error("Remarks is required.");
+    }
+    else {
+        return true;
+    }
+
+}
+

@@ -20,7 +20,13 @@ export const commonService = {
     getAllUnits,
     getAllTax,
     barCodeChk,
-    getAllItems
+    getAllItems,
+    createCustomer,
+    updateCustomer,
+    getCustomers,
+    getCustomerDetails,
+    deleteCustomer,
+   // checkCustomer
 }
 
 function signIn(user, password) {
@@ -32,6 +38,7 @@ function checkUser(user) {
     const checkUser = db.collection("users").where("email", "==", user).get();
     return checkUser;
 }
+
 
 async function addEmail(user) {
     return await auth.createUserWithEmailAndPassword(user.email, user.password);
@@ -65,6 +72,11 @@ function toggleUsers(tempRec, id) {
 function getProfileById(id) {
     const getProfileById = db.collection("users").doc(id).get();
     return getProfileById;
+}
+
+function getCustomerDetails(id) {
+    const getCustomerDetails = db.collection("customers").doc(id).get();
+    return getCustomerDetails;
 }
 
 function updateUsers(user, uid) {
@@ -146,3 +158,50 @@ async function getAllItems(){
         return console.log(err);
     }
 }
+
+
+function createCustomer(user) {
+    const createCustomers =  db.collection("customers").add({
+        name: user.name,
+        company: user.company,
+        address: user.address,
+        billingAddress: user.billingAddress,
+        landLine: user.landLine,
+        mobileNumber: user.mobileNumber,
+        email: user.email,
+        gstNum: user.gstNum,
+        remarks:user.remarks,
+    });
+    return createCustomers;
+}
+
+
+function updateCustomer(user,id) {
+    const updateCustomer =  db.collection("customers").doc(id).update({
+        name: user.name,
+        company: user.company,
+        address: user.address,
+        billingAddress: user.billingAddress,
+        landLine: user.landLine,
+        mobileNumber: user.mobileNumber,
+        email: user.email,
+        gstNum: user.gstNum,
+        remarks:user.remarks,
+    });
+    return updateCustomer;
+}
+
+function getCustomers() {
+    const getCustomers = db.collection("customers").get();
+    return getCustomers;
+} 
+
+function deleteCustomer(rowId) { 
+    const deleteCustomer =  db.collection("customers").doc(rowId).delete();
+    return deleteCustomer;
+} 
+
+// function checkCustomer(user) {
+//     const checkCustomer = db.collection("customers").get();
+//     return checkCustomer;
+// }

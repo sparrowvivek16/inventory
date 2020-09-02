@@ -27,23 +27,33 @@ class DashboardSidebar extends Component {
                     <div className="sidenav-menu">
                         <div className="nav accordion" id="accordionSidenav">
                             <div className="sidenav-menu-heading">User</div>
-                                <NavLink className="nav-link" to="/dashboard">
+                            <NavLink className="nav-link" to="/dashboard">
                                 <div className="nav-link-icon"><i data-feather="activity"></i></div>
                                     Dashboard
                                 </NavLink>
-                                <NavLink className="nav-link" to="/newitem">                         
-                                    <div className="nav-link-icon"><i data-feather="plus-square"></i></div>                                   
-                                    New Item  
+                            <NavLink className="nav-link" to="/newitem">
+                                <div className="nav-link-icon"><i data-feather="plus-square"></i></div>
+                                    New Item
                                 </NavLink>
-                                <NavLink className="nav-link" to="/settings">                         
-                                    <div className="nav-link-icon"><i data-feather="settings"></i></div>                                   
-                                    Settings  
+                            <NavLink className="nav-link" to="/settings">
+                                <div className="nav-link-icon"><i data-feather="settings"></i></div>
+                                    Settings
                                 </NavLink>
-                                {isAdmin && <div className="sidenav-menu-heading">Admin</div>}
-                                {isAdmin && <NavLink className="nav-link" to="/register">
-                                <div className="nav-link-icon"><i data-feather="plus"></i></div>
+                            {isAdmin && <div>
+                                <div className="sidenav-menu-heading">Admin</div>
+                                <NavLink className="nav-link" to="/register">
+                                    <div className="nav-link-icon"><i data-feather="plus"></i></div>
                                     New User
-                                </NavLink>}
+                                </NavLink>
+                                <NavLink className="nav-link" to="/addCustomer">
+                                    <div className="nav-link-icon"><i data-feather="plus"></i></div>
+                                    Add Customers
+                                </NavLink>
+                                <NavLink className="nav-link" to="/orderDetails">
+                                    <div className="nav-link-icon"><i data-feather="plus"></i></div>
+                                   Order Details
+                                </NavLink>
+                            </div>}
                         </div>
                     </div>
                     <div className="sidenav-footer">
