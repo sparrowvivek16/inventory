@@ -26,6 +26,14 @@ export const commonService = {
     getCustomers,
     getCustomerDetails,
     deleteCustomer,
+    getCustomerById,
+    getVendorById,
+    getItems,
+    createVendor,
+    getVendors,
+    getVendorDetails,
+    updateVendor,
+    deleteVendor
    // checkCustomer
 }
 
@@ -74,9 +82,24 @@ function getProfileById(id) {
     return getProfileById;
 }
 
+function getCustomerById(id) {
+    const getCustomerById = db.collection("customers").doc(id).get();
+    return getCustomerById;
+}
+
+function getVendorById(id) {
+    const getVendorById = db.collection("vendors").doc(id).get();
+    return getVendorById;
+}
+
 function getCustomerDetails(id) {
     const getCustomerDetails = db.collection("customers").doc(id).get();
     return getCustomerDetails;
+}
+
+function getVendorDetails(id) {
+    const getVendorDetails = db.collection("vendors").doc(id).get();
+    return getVendorDetails;
 }
 
 function updateUsers(user, uid) {
@@ -160,35 +183,70 @@ async function getAllItems(){
 }
 
 
-function createCustomer(user) {
+function createCustomer(customer) {
     const createCustomers =  db.collection("customers").add({
-        name: user.name,
-        company: user.company,
-        address: user.address,
-        billingAddress: user.billingAddress,
-        landLine: user.landLine,
-        mobileNumber: user.mobileNumber,
-        email: user.email,
-        gstNum: user.gstNum,
-        remarks:user.remarks,
+        name: customer.name,
+        company: customer.company,
+        address: customer.address,
+        billingAddress: customer.billingAddress,
+        landLine: customer.landLine,
+        mobileNumber: customer.mobileNumber,
+        email: customer.email,
+        gstNum: customer.gstNum,
+        remarks:customer.remarks,
     });
     return createCustomers;
 }
 
+function createVendor(vendor) {
+    const createVendor =  db.collection("vendors").add({
+        name: vendor.name,
+        company: vendor.company,
+        address: vendor.address,
+        billingAddress: vendor.billingAddress,
+        landLine: vendor.landLine,
+        mobileNumber: vendor.mobileNumber,
+        email: vendor.email,
+        gstNum: vendor.gstNum,
+        accNumber: vendor.accNumber,
+        ifscCode: vendor.ifscCode,
+        accHolder: vendor.accHolder,
+        remarks:vendor.remarks,
+    });
+    return createVendor;
+}
 
-function updateCustomer(user,id) {
+function updateCustomer(customer,id) {
     const updateCustomer =  db.collection("customers").doc(id).update({
-        name: user.name,
-        company: user.company,
-        address: user.address,
-        billingAddress: user.billingAddress,
-        landLine: user.landLine,
-        mobileNumber: user.mobileNumber,
-        email: user.email,
-        gstNum: user.gstNum,
-        remarks:user.remarks,
+        name: customer.name,
+        company: customer.company,
+        address: customer.address,
+        billingAddress: customer.billingAddress,
+        landLine: customer.landLine,
+        mobileNumber: customer.mobileNumber,
+        email: customer.email,
+        gstNum: customer.gstNum,
+        remarks:customer.remarks,
     });
     return updateCustomer;
+}
+
+function updateVendor(vendor,id) {
+    const updateVendor =  db.collection("vendors").doc(id).update({
+        name: vendor.name,
+        company: vendor.company,
+        address: vendor.address,
+        billingAddress: vendor.billingAddress,
+        landLine: vendor.landLine,
+        mobileNumber: vendor.mobileNumber,
+        email: vendor.email,
+        gstNum: vendor.gstNum,
+        remarks:vendor.remarks,
+        accNumber: vendor.accNumber,
+        ifscCode: vendor.ifscCode,
+        accHolder: vendor.accHolder,
+    });
+    return updateVendor;
 }
 
 function getCustomers() {
@@ -196,10 +254,25 @@ function getCustomers() {
     return getCustomers;
 } 
 
+function getVendors() {
+    const getVendors = db.collection("vendors").get();
+    return getVendors;
+}
+
 function deleteCustomer(rowId) { 
     const deleteCustomer =  db.collection("customers").doc(rowId).delete();
     return deleteCustomer;
 } 
+
+function deleteVendor(rowId) { 
+    const deleteVendor =  db.collection("vendors").doc(rowId).delete();
+    return deleteVendor;
+} 
+function getItems() {
+    const getItems = db.collection("items").get();
+    return getItems;
+} 
+
 
 // function checkCustomer(user) {
 //     const checkCustomer = db.collection("customers").get();

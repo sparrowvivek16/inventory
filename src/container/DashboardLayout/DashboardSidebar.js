@@ -45,9 +45,14 @@ class DashboardSidebar extends Component {
                                     <div className="nav-link-icon"><i data-feather="plus"></i></div>
                                     New User
                                 </NavLink>
+                                <div className="sidenav-menu-heading">Orders</div>
                                 <NavLink className="nav-link" to="/addCustomer">
                                     <div className="nav-link-icon"><i data-feather="plus"></i></div>
-                                    Add Customers
+                                    Customers
+                                </NavLink>
+                                <NavLink className="nav-link" to="/addVendors">
+                                    <div className="nav-link-icon"><i data-feather="plus"></i></div>
+                                    Vendors
                                 </NavLink>
                                 <NavLink className="nav-link" to="/orderDetails">
                                     <div className="nav-link-icon"><i data-feather="plus"></i></div>
@@ -56,12 +61,12 @@ class DashboardSidebar extends Component {
                             </div>}
                         </div>
                     </div>
-                    <div className="sidenav-footer">
+                    {/* <div className="sidenav-footer">
                         <div className="sidenav-footer-content">
                             <div className="sidenav-footer-subtitle">Logged in as:</div>
                             <div className="sidenav-footer-title">Valerie Luna</div>
                         </div>
-                    </div>
+                    </div> */}
                 </nav>
             </div>
         );

@@ -5,12 +5,12 @@ import ReactDatatable from '@ashvin27/react-datatable';
 import { commonService } from '../common/service/CommonService';
 import ConfirmPopup from '../common/ConfirmPopup';
 
-class addCustomers extends Component {
+class addVendors extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            customer: {
+            vendor: {
                 name: '',
                 company: '',
                 address: '',
@@ -20,9 +20,12 @@ class addCustomers extends Component {
                 email: '',
                 gstNum: '',
                 remarks: '',
+                accNumber:'',
+                ifscCode:'',
+                accHolder:'',
             },
-            customerList: [],
-            updateCustomer: false,
+            vendorList: [],
+            updateVendor: false,
             showModal: false,
             deleteCustomer: false,
             id: '',
@@ -62,11 +65,20 @@ class addCustomers extends Component {
             {
                 key: "mobileNumber", text: "Mobile Number", className: "Mobile Number", align: "left", sortable: true,
             },
-            {
-                key: "email", text: "Email", className: "Email", align: "left", sortable: true,
-            },
+            // {
+            //     key: "email", text: "Email", className: "Email", align: "left", sortable: true,
+            // },
             {
                 key: "gstNum", text: "GST Number", className: "GST Number", align: "left", sortable: true,
+            },
+            {
+                key: "accNumber", text: "Acc Number", className: "Acc Number", align: "left", sortable: true,
+            },
+            {
+                key: "ifscCode", text: "IFSC Code", className: "IFSC Code", align: "left", sortable: true,
+            },
+            {
+                key: "accHolder", text: "Acc Holder", className: "Acc Holder", align: "left", sortable: true,
             },
             {
                 key: "remarks", text: "Remarks", className: "Remarks", align: "left", sortable: true,
@@ -96,8 +108,8 @@ class addCustomers extends Component {
     editRecord(record) {
         let id = record.id;
         window.location.href = "#";
-        this.setState({ id: id, updateCustomer: true });
-        commonService.getCustomerDetails(id)
+        this.setState({ id: id, updateVendor: true });
+        commonService.getVendorDetails(id)
             .then(data => {
                 this.setViewData(data);
             })
@@ -107,7 +119,7 @@ class addCustomers extends Component {
     setViewData(data) {
         if (data) {
             this.setState({
-                customer: {
+                vendor: {
                     name: data.data().name,
                     company: data.data().company,
                     address: data.data().address,
@@ -117,6 +129,9 @@ class addCustomers extends Component {
                     email: data.data().email,
                     gstNum: data.data().gstNum,
                     remarks: data.data().remarks,
+                    accNumber: data.data().accNumber,
+                    ifscCode: data.data().ifscCode,
+                    accHolder: data.data().accHolder,
                 },
             });
         }
@@ -138,10 +153,10 @@ class addCustomers extends Component {
     }
 
     proceed(rowId, type){
-        commonService.deleteCustomer(rowId)
+        commonService.deleteVendor(rowId)
                 .then(() => {
                     this.reloadPage();
-                    this.alerts.success("Customer Deleted Successfully")
+                    this.alerts.success("Vendor Deleted Successfully")
                     this.closeConfirmationPopup();
                 })
                 .catch(err => this.alerts.error(err))
@@ -158,35 +173,35 @@ class addCustomers extends Component {
 
     credentials(event) {
         const { name, value } = event.target;
-        const { customer } = this.state;
+        const { vendor } = this.state;
         this.setState({
-            customer: {
-                ...customer,
+            vendor: {
+                ...vendor,
                 [name]: value
             }
         });
     }
 
-    addUpdateCustomers = (e) => {
+    addUpdateVendors = (e) => {
         e.preventDefault();
-        const { customer, id, updateCustomer } = this.state;
-        if (updateCustomer !== true) {
-            if (validations.registerCustomerValidation(customer)) {
-                commonService.createCustomer(customer)
+        const { vendor, id, updateVendor } = this.state;
+        if (updateVendor !== true) {
+            if (validations.registerVendorValidation(vendor)) {
+                commonService.createVendor(vendor)
                     .then(() => {
-                        this.alerts.success('Customer Added Successfully')
+                        this.alerts.success('Vendor Added Successfully')
                         this.resetInput();
                     })
                     .catch(err => this.alerts.error(err));
             }
         }
         else {
-            if (validations.registerCustomerValidation(customer)) {
-                commonService.updateCustomer(customer, id)
+            if (validations.registerCustomerValidation(vendor)) {
+                commonService.updateVendor(vendor, id)
                     .then(() => {
-                        this.alerts.success('Customer Updated Successfully')
+                        this.alerts.success('Vendor Updated Successfully')
                         this.resetInput();
-                        this.setState({ updateCustomer: false })
+                        this.setState({ updateVendor: false })
                     })
                     .catch(err => this.alerts.error(err));
             }
@@ -195,11 +210,11 @@ class addCustomers extends Component {
     }
 
     // emailCheck() {
-    //     const { customer } = this.state;
-    //     commonService.checkCustomer(customer).then((value) => {
+    //     const { vendor } = this.state;
+    //     commonService.checkCustomer(vendor).then((value) => {
     //         value.forEach(doc => {
     //             let email = doc.data().email;
-    //             if (customer.email === email) {
+    //             if (vendor.email === email) {
     //                 this.alerts.error(`${email} Exists`);
     //             }
     //         });
@@ -210,7 +225,7 @@ class addCustomers extends Component {
 
     resetInput() {
         this.setState({
-            customer: {
+            vendor: {
                 name: '',
                 company: '',
                 address: '',
@@ -220,12 +235,15 @@ class addCustomers extends Component {
                 email: '',
                 gstNum: '',
                 remarks: '',
+                accNumber:'',
+                ifscCode:'',
+                accHolder:'',
             }
         });
     }
 
-    getAllCustomers() {
-        commonService.getCustomers().then(data => {
+    getAllVendors() {
+        commonService.getVendors().then(data => {
             let datas = [];
             data.docs.forEach(doc => {
                 datas.push({
@@ -239,30 +257,33 @@ class addCustomers extends Component {
                     email: doc.data().email,
                     gstNum: doc.data().gstNum,
                     remarks: doc.data().remarks,
+                    accNumber: doc.data().accNumber,
+                    ifscCode: doc.data().ifscCode,
+                    accHolder: doc.data().accHolder,
                 });
             });
             this.setState({
-                customerList: datas
+                vendorList: datas
             });
         }).catch(err => this.alerts.error(err));
     }
 
     tableAction() {
-        this.getAllCustomers();
+        this.getAllVendors();
 
     }
 
 
     componentDidMount() {
-        this.getAllCustomers();
+        this.getAllVendors();
     }
 
     reloadPage() {
-        this.getAllCustomers();
+        this.getAllVendors();
     }
 
     render() {
-        const { customer, updateCustomer } = this.state;
+        const { vendor, updateVendor } = this.state;
         return (
             <div id="layoutAuthentication">
                 <div id="layoutAuthentication_content">
@@ -274,7 +295,7 @@ class addCustomers extends Component {
                                         <div className="col-auto mb-3">
                                             <h1 className="page-header-title">
                                             <div className="page-header-icon"><i data-feather="file"></i></div>
-                                            Add / Edit / Remove Customers
+                                            Add / Edit / Remove Vendors
                                     </h1>
                                         </div>
                                     </div>
@@ -285,21 +306,21 @@ class addCustomers extends Component {
                             <div className="row justify-content-center">
                                 <div className="col-lg-12">
                                <div className="card shadow-lg border-0 rounded-lg mt-3">
-                               { !updateCustomer ?<div className="card-header add-update-form">Add Customer</div>:
-                                  <div className="card-header add-update-form">Update Customer</div>}
+                               { !updateVendor ?<div className="card-header add-update-form">Add Vendors</div>:
+                                  <div className="card-header add-update-form">Update Vendors</div>}
                                         <div className="card-body">
-                                            <form id="login-form" onSubmit={this.addUpdateCustomers}>
+                                            <form id="login-form" onSubmit={this.addUpdateVendors}>
                                                 <div className="form-row">
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputName">Name</label>
-                                                            <input id="name" type="text" name="name" value={customer.name} className="form-control" onChange={this.credentials} />
+                                                            <input id="name" type="text" name="name" value={vendor.name} className="form-control" onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputCompany">Company</label>
-                                                            <input id="company" type="text" name="company" value={customer.company} className="form-control " onChange={this.credentials} />
+                                                            <input id="company" type="text" name="company" value={vendor.company} className="form-control " onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -307,12 +328,12 @@ class addCustomers extends Component {
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputAddress">Address</label>
-                                                            <input id="address" type="text" name="address" value={customer.address} className="form-control " onChange={this.credentials} />
+                                                            <input id="address" type="text" name="address" value={vendor.address} className="form-control " onChange={this.credentials} />
                                                         </div> </div>
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputBillAddress">Bill Address</label>
-                                                            <input id="billingAddress" type="text" name="billingAddress" value={customer.billingAddress} className="form-control " onChange={this.credentials} />
+                                                            <input id="billingAddress" type="text" name="billingAddress" value={vendor.billingAddress} className="form-control " onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -320,13 +341,13 @@ class addCustomers extends Component {
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputLandLine">LandLine</label>
-                                                            <input id="landLine" type="text" name="landLine" value={customer.landLine} className="form-control " onChange={this.credentials} />
+                                                            <input id="landLine" type="text" name="landLine" value={vendor.landLine} className="form-control " onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputMobileNumber">Mobile Number</label>
-                                                            <input id="mobileNumber" type="text" name="mobileNumber" value={customer.mobileNumber} className="form-control" onChange={this.credentials} />
+                                                            <input id="mobileNumber" type="text" name="mobileNumber" value={vendor.mobileNumber} className="form-control" onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -334,36 +355,58 @@ class addCustomers extends Component {
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <label className="small mb-1" htmlFor="inputGSTNum">GST Num</label>
-                                                            <input id="gstNum" type="text" name="gstNum" value={customer.gstNum} className="form-control" onChange={this.credentials} />
+                                                            <input id="gstNum" type="text" name="gstNum" value={vendor.gstNum} className="form-control" onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6">
                                                     <div class="form-group">
                                                     <label class="small mb-1" for="inputEmailAddress">Email </label>
-                                                    <input id="inputEmailAddress" type="text" name="email" value={customer.email} className="form-control" onChange={this.credentials} />
+                                                    <input id="inputEmailAddress" type="text" name="email" value={vendor.email} className="form-control" onChange={this.credentials} />
                                                 </div>
                                                 </div>
-                                                    {/* <div className="col-md-6">
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="col-md-6">
                                                         <div className="form-group">
-                                                            <label className="small mb-1" htmlFor="inputRemarks">Remarks</label>
-                                                            <textarea id="remarks" type="text" name="remarks" value={customer.remarks} className="form-control" onChange={this.credentials} />
-                                                        </div>
-                                                    </div> */}
-                                                    {/* <div className="col-md-6 form-group text-right"> */}
-                                                         <div className="col-md-6">
-                                                        <div className="form-group">
-                                                            <label className="small mb-1" htmlFor="inputRemarks">Remarks</label>
-                                                            <textarea id="remarks" type="text" name="remarks" value={customer.remarks} className="form-control" onChange={this.credentials} />
+                                                            <label className="small mb-1" htmlFor="inputAccNumber">Acc number</label>
+                                                            <input id="accNumber" type="text" name="accNumber" value={vendor.accNumber} className="form-control " onChange={this.credentials} />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6">
                                                         <div className="form-group">
-                                                        {!updateCustomer ? <button className="btn btn-primary btn-block" href="auth-login-basic.html" >Create Customer</button>
-                                                            : <button className="btn btn-primary btn-block" href="auth-login-basic.html" >Update Customer</button>}
+                                                            <label className="small mb-1" htmlFor="inputIfscCode">IFSC Code</label>
+                                                            <input id="ifscCode" type="text" name="ifscCode" value={vendor.ifscCode} className="form-control" onChange={this.credentials} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    {/* <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <label className="small mb-1" htmlFor="inputRemarks">Remarks</label>
+                                                            <textarea id="remarks" type="text" name="remarks" value={vendor.remarks} className="form-control" onChange={this.credentials} />
+                                                        </div>
+                                                    </div> */}
+                                                    {/* <div className="col-md-6 form-group text-right"> */}
+                                                    <div className="form-row">
+                                                    <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <label className="small mb-1" htmlFor="inputAccHolder">Acc Holder</label>
+                                                            <input id="accHolder" type="text" name="accHolder" value={vendor.accHolder} className="form-control" onChange={this.credentials} />
+                                                        </div>
+                                                    </div>
+                                                         <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <label className="small mb-1" htmlFor="inputRemarks">Remarks</label>
+                                                            <textarea id="remarks" type="text" name="remarks" value={vendor.remarks} className="form-control" onChange={this.credentials} />
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <div className="form-group">
+                                                        {!updateVendor ? <button className="btn btn-primary btn-block" href="auth-login-basic.html" >Create Vendor</button>
+                                                            : <button className="btn btn-primary btn-block" href="auth-login-basic.html" >Update Vendor</button>}
                                                     
                                                 </div>
                                                  </div>
-                                                    </div>
+                                                 </div> 
                                             </form>
                                         </div>
                                     </div>
@@ -373,12 +416,12 @@ class addCustomers extends Component {
                             <div className="row justify-content-center">
                                 <div className="col-lg-12">
                                     <div className="card shadow-lg border-0 rounded-lg mt-3">
-                                        <div className="card-header">Customer List</div>
+                                        <div className="card-header">Vendor List</div>
                                         <div className="card-body">
                                             <div className="datatable">
                                                 <ReactDatatable
                                                     config={this.config}
-                                                    records={this.state.customerList}
+                                                    records={this.state.vendorList}
                                                     columns={this.columns}
                                                     onChange={(data) => this.tableAction(data)}
                                                 />
@@ -396,4 +439,5 @@ class addCustomers extends Component {
     }
 }
 
-export default addCustomers;
+export default addVendors;
+
