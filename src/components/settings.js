@@ -9,23 +9,29 @@ import { commonService } from '../common/service/CommonService';
 import Editcategory from './tables/editcategory';
 import Deleteunits from './tables/deleteunits';
 import DeleteTax from './tables/deletetax'; 
+import { Combobox } from 'react-widgets'
+import 'react-widgets/dist/css/react-widgets.css';
 
 class Settings extends Component{
     constructor(props){
         super(props);      
         this.storage = new StorageService();
         this.alerts = new AlertService();
-        this.auth = firebase.auth();     
         this.db = firebase.firestore(); 
     }
     state = {
-        allunits: {}
+        allunits: {},
+        searchitems: ['Loading...'],
+        oldstock : false        
     }
+
     componentDidMount(){
          //check if session is available, if not redirect to login
          if(this.storage.getToken()==null){
             this.props.history.push('/login');
         }
+        //init the modal with dynamic values (stock delete)
+        this.alerts.modalInit('removeOldStock','Confirm your action','Are you sure to delete this Stock?','deleteOStock');
         
         // Activate Feather icons
         feather.replace();
@@ -38,13 +44,18 @@ class Settings extends Component{
 
         //table to delete taxs
         this.taxSettings();
+
+        //populatethe search dropdown menu
+        this.searchSetting();
+
                
     }
+
     getFormData = (e) =>{
         this.setState({ 
                 ...this.state,
                 [e.target.id] : e.target.value
-        });              
+        });
     }
 
     addNewCategory = (e) =>{
@@ -277,6 +288,159 @@ class Settings extends Component{
         }).catch(err=>console.log(err));        
     }
 
+    searchSetting = () =>{
+        //get all items from DB
+        commonService.getAllItems().then(val=>{
+            let searchTerms=[];
+            //get the searchby value
+            let key = document.querySelector('#searchby').value;
+            //based on serachby assign the dropdown for search
+            val.docs.forEach(dat=>{
+                if(key==='barcode'){ searchTerms.push(dat.data().barcode)}
+                if(key==='skuID'){searchTerms.push(dat.data().skuID)}
+                if(key==='particulars'){searchTerms.push(dat.data().particulars)}
+
+            });
+            this.setState({ 
+                ...this.state,
+                searchitems: searchTerms
+            });
+        }).catch(err=>console.log(err));
+    }
+
+    stockSetting = (val)=>{        
+        let key = document.querySelector('#searchby').value;
+        //get stock table reference
+        let stockTable = document.querySelector('.current-stock');   
+       //clear the stocktable table
+       stockTable.getElementsByTagName('tbody')[0].innerHTML = ''; 
+        //get item by searchby and value from dropdown
+        this.db.collection('items').where(key,'==',val).get()
+        .then(vals=>{
+            
+            //assign the single item value into the table
+            let data =vals.docs[0].data();
+            //search term value to state and stockState and current item qty
+            this.setState({ 
+                ...this.state,
+                searchterm : val,
+                oldstock : false,
+                curItmQty : data.qty
+            });
+            let cuexpDate = utility.formatDate(data.expdate,{ sec:1, year: 'numeric', month: 'short', day: '2-digit'});           
+            document.querySelector('.aqUnit').textContent=data.unit;
+             
+            let row = stockTable.getElementsByTagName('tbody')[0].insertRow(-1)
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            cell0.innerHTML = 'Current';
+            cell1.innerHTML = `${data.qty} ${data.unit}`;
+            cell2.innerHTML = cuexpDate;
+            
+            //get all the other availble stock and update into the table
+            this.db.collection('itemNS').where('skuID','==',data.skuID).get()
+            .then(vals=>{
+                if(vals.docs.length>0){
+                    this.setState({ 
+                        ...this.state,
+                        oldstock : true
+                    });
+                    vals.docs.forEach((itm,index)=>{                        
+                        //remove button to delete the other stocks (existing)
+                        const removeButton =document.createElement('button');
+                        removeButton.classList.add('btn');
+                        removeButton.classList.add('btn-danger');
+                        removeButton.setAttribute('type','button');
+                        removeButton.setAttribute('data-toggle','modal');
+                        removeButton.setAttribute('data-target','#removeOldStock');
+                        removeButton.setAttribute('id',itm.id);
+                        removeButton.addEventListener('click',e=>this.deleteOldStock(e.target.id,e.target.parentNode.parentNode.rowIndex));
+                        removeButton.textContent='Remove';  
+
+                        //insert the existing stock into table                     
+                        let row = stockTable.getElementsByTagName('tbody')[0].insertRow(-1)                  
+                        let cell0 = row.insertCell(0);
+                        let cell1 = row.insertCell(1);
+                        let cell2 = row.insertCell(2);
+                        let cell3 = row.insertCell(3);
+                        cell0.innerHTML = index+1;
+                        cell1.innerHTML = `${itm.data().qty} ${data.unit}`;
+                        cell2.innerHTML = utility.formatDate(itm.data().expdate,{ sec:1, year: 'numeric', month: 'short', day: '2-digit'});
+                        cell3.appendChild(removeButton);
+                    });                    
+                }
+            }).catch(err=>console.log(err));
+        })
+        .catch(err=>console.log(err));        
+    }
+
+    updateStock = (e) =>{
+        e.preventDefault();
+        if(validations.updateStockValid(this.state)){  
+            console.log(this.state.oldstock,this.state.curItmQty) ;
+            let key = document.querySelector('#searchby').value;
+            if(this.state.oldstock || this.state.curItmQty!=='0'){
+                 //get skuID
+                this.db.collection('items').where(key,'==',this.state.searchterm).get()
+                .then(dat=>{
+                    this.db.collection('itemNS').add({
+                        expdate : this.state.nuexpdate,
+                        qty : this.state.qtyupdate,
+                        skuID : dat.docs[0].data().skuID
+                    })
+                    .then(()=> {
+                        this.resetStockUpdate();
+                        this.alerts.snack(`New stock has been updated successfully`,'bg-green');
+                    })
+                    .catch(err=>console.log(err));
+                }).catch(err=>console.log(err));
+            }else {
+                if(this.state.curItmQty==='0'){
+                     //get docID
+                    this.db.collection('items').where(key,'==',this.state.searchterm).get()
+                    .then(dat=>{
+                        this.db.collection('items').doc(dat.docs[0].id)
+                        .update({ 
+                            expdate : this.state.nuexpdate,
+                            qty : this.state.qtyupdate,
+                        })
+                        .then(()=> {
+                            this.resetStockUpdate();
+                            this.alerts.snack(`New stock has been updated successfully`,'bg-green');
+                        })
+                        .catch(err=>console.log(err));
+                        
+                    })
+                    .catch(err=>console.log(err));
+                }
+            }
+        }
+    }
+
+    resetStockUpdate = () =>{
+        this.setState({ 
+            ...this.state,
+            oldstock : false
+        });
+        let stockTable = document.querySelector('.current-stock');   
+       //clear the stocktable table
+       stockTable.getElementsByTagName('tbody')[0].innerHTML = ''; 
+       document.querySelector('#stock-update').reset();
+    }
+
+    //when remove button clicked
+    deleteOldStock = (id,rowIndex) =>{
+        document.getElementById('deleteOStock').addEventListener('click',()=>{
+            //delete from DB
+            this.db.collection('itemNS').doc(id).delete().then(() => {
+                this.alerts.snack(`Stock has been successfully deleted`,'bg-green');  
+                //delete the row from DOM
+                document.querySelector('.current-stock').deleteRow(rowIndex);
+            }).catch(err => console.log(err));
+        });
+    }
+
     render(){
         return (<>
            <header className="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
@@ -295,6 +459,71 @@ class Settings extends Component{
             </header>
             <div className="container">
                 <div className="row">
+                <div className="col-md-12">
+                    <div className="card mb-4">
+                            <div className="card-header border-bottom">
+                                <h2>Stock Update</h2>
+                            </div>
+                            <div className="card-body">
+                            <form id="stock-update" onSubmit={this.updateStock}>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label htmlFor="searchby">Search By: </label>
+                                            <select className="form-control" id="searchby" defaultValue="barcode" onChange={this.searchSetting}>
+                                                <option value="particulars">Item</option>
+                                                <option value="skuID">SKU ID</option>
+                                                <option value="barcode">Barcode</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label htmlFor="searchbox">Search</label>
+                                            <Combobox
+                                                data={this.state.searchitems}
+                                                textField='name'
+                                                caseSensitive={false}
+                                                filter='contains'
+                                                onSelect={value=> this.stockSetting(value)}                                            
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <table className="table responsive current-stock" >
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Available Quantity</th>
+                                                    <th>Current Expiry Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label htmlFor="qtyupdate">Update Quantity</label>
+                                            <input className="form-control" id="qtyupdate" type="number" onChange={this.getFormData}/>
+                                            <label className="aqUnit"></label>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="nuexpdate">New Expiry Date</label>
+                                            <input className="form-control" id="nuexpdate" type="date" onChange={this.getFormData}/>                                           
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12 text-right">
+                                        <button className="btn btn-primary " type="submit">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                    </div>
+                    </div>
+
                     <div className="col-md-6">
                     <div className="card mb-4">
                             <div className="card-header border-bottom">

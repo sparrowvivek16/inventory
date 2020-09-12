@@ -1,4 +1,5 @@
 import AlertService from '../common/service/AlertService';
+import { utility } from '../common/utility';
 
 const alerts = new AlertService();
 
@@ -11,7 +12,8 @@ export const validations = {
     loginValidation,
     profileValidation,
     updatePassword,
-    forgetPasswordValidation
+    forgetPasswordValidation,
+    updateStockValid
 }
 
 //Registration
@@ -279,5 +281,20 @@ function newTaxValid(val,sec){
         }else{  
             return true;
         }
+    }
+}
+
+function updateStockValid(val){ 
+    if(!val.searchterm){
+        alerts.snack('Search and select an item to update stock','bg-red');
+    }else if(!val.qtyupdate){
+        alerts.snack('Update quantity is required','bg-red');
+    }else if(!val.nuexpdate){
+        alerts.snack('New expiry date is required','bg-red');
+    }else if(utility.compareDate(utility.formatDate(val.nuexpdate,{ sec:1, year: 'numeric', month: 'numeric', day: '2-digit'}),
+                                 utility.formatDate(new Date(),{ sec:1, year: 'numeric', month: 'numeric', day: '2-digit'}),'<=')){
+        alerts.snack('Expiry date cannot be today or lower','bg-red');
+    }else{
+        return true;
     }
 }

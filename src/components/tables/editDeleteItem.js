@@ -152,7 +152,6 @@ class EditDeleteItem extends Component{
                     config={this.config}
                     records={this.props.records}
                     columns={this.columns}
-                    
                 />
             </div>
         )

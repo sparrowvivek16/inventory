@@ -146,8 +146,7 @@ class Newitem extends Component{
             });
             update !== 0 ? subCatSelect.value = update : update=0;
 
-        })
-        .catch(err=> console.log(err));
+        }).catch(err=> console.log(err));
     }
 
     //for the datatable
@@ -163,7 +162,6 @@ class Newitem extends Component{
                                                             year: 'numeric',
                                                             month: 'short',
                                                             day: '2-digit'
-
                                                         }) : expDate='';
                 val.data().taxes.forEach(tax=>{
                     iTax += ` ${tax.name}-${tax.percentage}%`;
