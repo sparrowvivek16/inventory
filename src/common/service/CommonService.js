@@ -20,7 +20,8 @@ export const commonService = {
     getAllUnits,
     getAllTax,
     barCodeChk,
-    getAllItems
+    getAllItems,
+    createDynBtn
 }
 
 function signIn(user, password) {
@@ -145,4 +146,20 @@ async function getAllItems(){
     }catch (err){
         return console.log(err);
     }
+}
+
+
+//dynamic button
+function createDynBtn(clss,attribes,btnName){
+   
+    const dButton = document.createElement('button');
+    clss.forEach(ele => {
+        dButton.classList.add(ele);
+    });
+    attribes.forEach(ele => {
+        dButton.setAttribute(ele.name,ele.val);
+    });
+    dButton.textContent=btnName;  
+
+    return dButton;
 }

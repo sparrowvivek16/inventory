@@ -291,8 +291,7 @@ function updateStockValid(val){
         alerts.snack('Update quantity is required','bg-red');
     }else if(!val.nuexpdate){
         alerts.snack('New expiry date is required','bg-red');
-    }else if(utility.compareDate(utility.formatDate(val.nuexpdate,{ sec:1, year: 'numeric', month: 'numeric', day: '2-digit'}),
-                                 utility.formatDate(new Date(),{ sec:1, year: 'numeric', month: 'numeric', day: '2-digit'}),'<=')){
+    }else if(utility.compareDate(val.nuexpdate,new Date(),'<=')){
         alerts.snack('Expiry date cannot be today or lower','bg-red');
     }else{
         return true;

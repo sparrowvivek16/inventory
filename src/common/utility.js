@@ -21,9 +21,9 @@ function formatDate(val,format){
     }
 }
 
-function compareDate(a,b,rule){
+function compareDate(a,b,rule){   
     let d1 = new Date(a);
-    let d2 = new Date(b);
+    let d2 = new Date(b);   
     if(rule==='>='){
         return +d1 >= +d2;
     }else if(rule==='<='){

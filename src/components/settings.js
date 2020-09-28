@@ -22,7 +22,8 @@ class Settings extends Component{
     state = {
         allunits: {},
         searchitems: ['Loading...'],
-        oldstock : false        
+        oldstock : false,
+        nsExp : ''
     }
 
     componentDidMount(){
@@ -32,6 +33,9 @@ class Settings extends Component{
         }
         //init the modal with dynamic values (stock delete)
         this.alerts.modalInit('removeOldStock','Confirm your action','Are you sure to delete this Stock?','deleteOStock');
+
+         //init the modal with dynamic values (unstock)
+         this.alerts.modalInit('unStockExpy','Confirm your action','Are you sure to unstock and move to expiry section?','unOStock');
         
         // Activate Feather icons
         feather.replace();
@@ -336,7 +340,19 @@ class Settings extends Component{
             let cell2 = row.insertCell(2);
             cell0.innerHTML = 'Current';
             cell1.innerHTML = `${data.qty} ${data.unit}`;
-            cell2.innerHTML = cuexpDate;
+            data.qty!=='0' ? cell2.innerHTML =cuexpDate : cell2.innerHTML = 'N/A';
+            if(utility.compareDate(cuexpDate,new Date(),'<=') && data.qty !=='0'){
+                const unStockBtn = commonService.createDynBtn(['btn','btn-warning'],
+                                                            [{name:'type', val:'button'},
+                                                            {name: 'data-toggle', val: 'modal'},
+                                                            {name: 'data-target', val: '#unStockExpy'},
+                                                            {name: 'id', val: vals.docs[0].id}
+                                                            ],'Unstock');
+                unStockBtn.addEventListener('click',e=>this.unStockItm(e.target.id,data.skuID,data.qty,data.expdate));
+                cell2.classList.add('text-danger');
+                let cell3 = row.insertCell(3);
+                cell3.appendChild(unStockBtn);
+            }
             
             //get all the other availble stock and update into the table
             this.db.collection('itemNS').where('skuID','==',data.skuID).get()
@@ -348,15 +364,13 @@ class Settings extends Component{
                     });
                     vals.docs.forEach((itm,index)=>{                        
                         //remove button to delete the other stocks (existing)
-                        const removeButton =document.createElement('button');
-                        removeButton.classList.add('btn');
-                        removeButton.classList.add('btn-danger');
-                        removeButton.setAttribute('type','button');
-                        removeButton.setAttribute('data-toggle','modal');
-                        removeButton.setAttribute('data-target','#removeOldStock');
-                        removeButton.setAttribute('id',itm.id);
-                        removeButton.addEventListener('click',e=>this.deleteOldStock(e.target.id,e.target.parentNode.parentNode.rowIndex));
-                        removeButton.textContent='Remove';  
+                        const removeButton = commonService.createDynBtn(['btn','btn-danger'],
+                                                [{name: 'type', val: 'button'},
+                                                 {name: 'data-toggle', val: 'modal'},
+                                                 {name: 'data-target', val: '#removeOldStock'},
+                                                 {name: 'id', val: itm.id}
+                                                ],'Remove');
+                        removeButton.addEventListener('click',e=>this.deleteOldStock(e.target.id));
 
                         //insert the existing stock into table                     
                         let row = stockTable.getElementsByTagName('tbody')[0].insertRow(-1)                  
@@ -364,21 +378,28 @@ class Settings extends Component{
                         let cell1 = row.insertCell(1);
                         let cell2 = row.insertCell(2);
                         let cell3 = row.insertCell(3);
+                        
                         cell0.innerHTML = index+1;
                         cell1.innerHTML = `${itm.data().qty} ${data.unit}`;
                         cell2.innerHTML = utility.formatDate(itm.data().expdate,{ sec:1, year: 'numeric', month: 'short', day: '2-digit'});
+                        if(utility.compareDate(itm.data().expdate,new Date(),'<=')){
+                            cell2.classList.add('text-danger');
+                            this.setState({
+                                ...this.state,
+                                nsExp: [itm.data().skuID,itm.data().qty,itm.data().expdate]
+                            });
+                        }
                         cell3.appendChild(removeButton);
                     });                    
                 }
             }).catch(err=>console.log(err));
         })
-        .catch(err=>console.log(err));        
+        .catch(err=>console.log(err));
     }
 
     updateStock = (e) =>{
         e.preventDefault();
-        if(validations.updateStockValid(this.state)){  
-            console.log(this.state.oldstock,this.state.curItmQty) ;
+        if(validations.updateStockValid(this.state)){              
             let key = document.querySelector('#searchby').value;
             if(this.state.oldstock || this.state.curItmQty!=='0'){
                  //get skuID
@@ -421,7 +442,12 @@ class Settings extends Component{
     resetStockUpdate = () =>{
         this.setState({ 
             ...this.state,
-            oldstock : false
+            curItmQty: '',
+            nuexpdate: '',
+            qtyupdate: '',
+            oldstock : false,
+            searchterm: '',
+            nsExp : ''
         });
         let stockTable = document.querySelector('.current-stock');   
        //clear the stocktable table
@@ -429,15 +455,52 @@ class Settings extends Component{
        document.querySelector('#stock-update').reset();
     }
 
-    //when remove button clicked
-    deleteOldStock = (id,rowIndex) =>{
+    //when stock remove button clicked on stock update
+    deleteOldStock = (id) =>{
+        
         document.getElementById('deleteOStock').addEventListener('click',()=>{
-            //delete from DB
-            this.db.collection('itemNS').doc(id).delete().then(() => {
-                this.alerts.snack(`Stock has been successfully deleted`,'bg-green');  
-                //delete the row from DOM
-                document.querySelector('.current-stock').deleteRow(rowIndex);
+            let data = this.state.nsExp;
+             //delete from DB
+             this.db.collection('itemNS').doc(id).delete().then(() => {
+                if(data===''){
+                        this.resetStockUpdate();
+                        this.alerts.snack(`Stock has been successfully deleted.`,'bg-green');
+                }else{
+                    this.db.collection('itemEXP').add({skuID: data[0], qty: data[1], expdate: data[2]}).then(()=>{
+                        this.resetStockUpdate();
+                        this.alerts.snack(`Stock has been deleted and moved to expired section.`,'bg-green');
+                    }).catch(err=>console.log(err));
+                }
             }).catch(err => console.log(err));
+        });
+    }
+
+    //when unstock button is clicked
+    unStockItm = (id,skuID,qty,expdate) =>{
+        document.getElementById('unOStock').addEventListener('click',()=>{
+            if(this.state.oldstock){
+                this.db.collection('itemNS').where('skuID','==',skuID).get().then(NS=>{
+                    this.db.collection('items').doc(id).update({expdate: NS.docs[0].data().expdate, qty: NS.docs[0].data().qty}).then(()=>{
+                        this.db.collection('itemEXP').add({skuID,qty,expdate}).then(()=>{
+                            this.db.collection('itemNS').doc(NS.docs[0].id).delete().then(() => {
+                                this.resetStockUpdate();
+                                this.alerts.snack(`Current expired stock has been moved to expired section and New Stock has been updated into Current stock.`,'bg-green');
+                            }).catch(err=>console.log(err+' Delete from new Stock - Error'));
+                        }).catch(err=>console.log(err+' Add into Expiry - Error'));
+                    }).catch(err=>console.log(err+' Update to Current stock - Error'));
+                }).catch(err=>console.log(err+' Fetch from New Stock - Error'));
+            }else{
+                let exdt= utility.formatDate(new Date(0),{ sec:1, year: 'numeric', month: 'numeric', day: '2-digit'})
+                this.db.collection('items').doc(id).update({expdate : exdt,qty : '0'})
+                    .then(()=> {
+                        this.db.collection('itemEXP').add({skuID,qty,expdate}).then(()=>{
+                            this.resetStockUpdate();
+                            this.alerts.snack(`Stock has been moved to expired section.`,'bg-green');
+                        }).catch(err=>console.log(err));
+                        
+                    })
+                    .catch(err=>console.log(err));
+            }            
         });
     }
 
@@ -482,10 +545,12 @@ class Settings extends Component{
                                             <label htmlFor="searchbox">Search</label>
                                             <Combobox
                                                 data={this.state.searchitems}
+                                                value={this.state.searchterm}
                                                 textField='name'
                                                 caseSensitive={false}
                                                 filter='contains'
-                                                onSelect={value=> this.stockSetting(value)}                                            
+                                                onChange={value=> this.setState({...this.state,searchterm: value})}
+                                                onSelect={value=> this.stockSetting(value)}
                                             />
                                         </div>
                                     </div>
