@@ -107,7 +107,6 @@ class orderDetails extends Component {
         let { selectedGroceryItems } = this.state;
         selectedGroceryItems.push(record);
         this.setState({ selectedGroceryItems, showSelectedItems: true })
-        alert("hi");
         console.log(this.state.selectedGroceryItems)
     }
     /**************************RadioButton action******************************/
@@ -336,10 +335,33 @@ class orderDetails extends Component {
         this.getAllItems();
     }
 
-    handleQuantity = (e) => {
-        this.setState({
-            [e.target.id]: e.target.value
-        });
+    handleQuantity = (e, index) => {
+        if (e.target.value > 0) {
+            const { selectedGroceryItems } = this.state;
+            let newData = [...selectedGroceryItems];
+            newData[index].qty = e.target.value;
+            this.setState({ newData });
+        }
+        else {
+            this.alerts.snack(`Quantity Canot be less than one`, 'bg-red');
+        }
+
+    }
+
+    removeRow = (index) => {
+        const { selectedGroceryItems } = this.state;
+        var newData = [...selectedGroceryItems];
+        newData.splice(index, 1);
+        this.setState({ selectedGroceryItems: newData });
+        if (selectedGroceryItems > 0) {
+            this.setState({ showSelectedItems: false })
+        }
+    }
+
+    submit = () => {
+        const { selectedGroceryItems } = this.state;
+        alert("Check ur console");
+        console.log(selectedGroceryItems);
     }
 
     render() {
@@ -366,17 +388,17 @@ class orderDetails extends Component {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="card mb-4">
-                                        <div class="sbp-preview-content">
+                                        <div className="sbp-preview-content">
                                             <div className="card-header border-bottom">
                                                 <label htmlFor="newunit">Choose Type</label>
                                             </div>
-                                            <div class="custom-control custom-radio custom-control-solid">
-                                                <input class="custom-control-input" id="customRadioSolid2" type="radio" value="vendor" name="customRadioSolid" checked={showCustomer !== true} onChange={this.chooseType} />
-                                                <label class="custom-control-label" for="customRadioSolid2">Vendor</label>
+                                            <div className="custom-control custom-radio custom-control-solid">
+                                                <input className="custom-control-input" id="customRadioSolid2" type="radio" value="vendor" name="customRadioSolid" checked={showCustomer !== true} onChange={this.chooseType} />
+                                                <label className="custom-control-label" htmlFor="customRadioSolid2">Vendor</label>
                                             </div>
-                                            <div class="custom-control custom-radio custom-control-solid">
-                                                <input class="custom-control-input" id="customRadioSolid1" type="radio" value="customer" name="customRadioSolid" checked={showCustomer === true} onChange={this.chooseType} />
-                                                <label class="custom-control-label" for="customRadioSolid1">Customer</label>
+                                            <div className="custom-control custom-radio custom-control-solid">
+                                                <input className="custom-control-input" id="customRadioSolid1" type="radio" value="customer" name="customRadioSolid" checked={showCustomer === true} onChange={this.chooseType} />
+                                                <label className="custom-control-label" htmlFor="customRadioSolid1">Customer</label>
                                             </div>
                                         </div>
                                         <div className="card-header border-bottom">
@@ -458,13 +480,13 @@ class orderDetails extends Component {
                                                                     <div className="col-md-6">
                                                                         <div className="form-group">
                                                                             <label className="small mb-1" htmlFor="inputName">Name</label>
-                                                                            <input id="name" type="text" disabled={user.name} value={user.name} name="name" className="form-control" onChange={this.credentials} />
+                                                                            <input id="name" type="text" disabled={user.name} defaultValue={user.name} name="name" className="form-control" onChange={this.credentials} />
                                                                         </div>
                                                                     </div>
                                                                     <div className="col-md-6">
                                                                         <div className="form-group">
                                                                             <label className="small mb-1" htmlFor="inputCompany">Company</label>
-                                                                            <input id="company" type="text" disabled={user.company} value={user.company} name="company" className="form-control " onChange={this.credentials} />
+                                                                            <input id="company" type="text" disabled={user.company} defaultValue={user.company} name="company" className="form-control " onChange={this.credentials} />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -472,12 +494,12 @@ class orderDetails extends Component {
                                                                     <div className="col-md-6">
                                                                         <div className="form-group">
                                                                             <label className="small mb-1" htmlFor="inputAddress">Address</label>
-                                                                            <input id="address" type="text" disabled={user.address} value={user.address} name="address" className="form-control " onChange={this.credentials} />
+                                                                            <input id="address" type="text" disabled={user.address} defaultValue={user.address} name="address" className="form-control " onChange={this.credentials} />
                                                                         </div> </div>
                                                                     <div className="col-md-6">
                                                                         <div className="form-group">
                                                                             <label className="small mb-1" htmlFor="inputBillAddress">Bill Address</label>
-                                                                            <input id="billingAddress" type="text" disabled={user.billingAddress} value={user.billingAddress} name="billingAddress" className="form-control " onChange={this.credentials} />
+                                                                            <input id="billingAddress" type="text" disabled={user.billingAddress} defaultValue={user.billingAddress} name="billingAddress" className="form-control " onChange={this.credentials} />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -485,12 +507,12 @@ class orderDetails extends Component {
                                                                     <div className="col-md-6">
                                                                         <div className="form-group">
                                                                             <label className="small mb-1" htmlFor="inputMobileNumber">Mobile Number</label>
-                                                                            <input id="mobileNumber" type="text" disabled={user.mobileNumber} value={user.mobileNumber} name="mobileNumber" className="form-control" onChange={this.credentials} />
+                                                                            <input id="mobileNumber" type="text" disabled={user.mobileNumber} defaultValue={user.mobileNumber} name="mobileNumber" className="form-control" onChange={this.credentials} />
                                                                         </div> </div>
                                                                     <div className="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label class="small mb-1" for="inputEmailAddress">Email </label>
-                                                                            <input id="inputEmailAddress" type="text" disabled={user.email} value={user.email} name="email" className="form-control" onChange={this.credentials} />
+                                                                        <div className="form-group">
+                                                                            <label className="small mb-1" htmlFor="inputEmailAddress">Email </label>
+                                                                            <input id="inputEmailAddress" type="text" disabled={user.email} defaultValue={user.email} name="email" className="form-control" onChange={this.credentials} />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -498,12 +520,12 @@ class orderDetails extends Component {
                                                                     <div className="col-md-6">
                                                                         <div className="form-group">
                                                                             <label className="small mb-1" htmlFor="inputAccHolder">Acc Holder</label>
-                                                                            <input id="accHolder" type="text" disabled={user.accHolder} value={user.accHolder} name="accHolder" className="form-control" onChange={this.credentials} />
+                                                                            <input id="accHolder" type="text" disabled={user.accHolder} defaultValue={user.accHolder} name="accHolder" className="form-control" onChange={this.credentials} />
                                                                         </div> </div>
                                                                     <div className="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label class="small mb-1" for="inputAccNumber">Acc Number</label>
-                                                                            <input id="accNum" type="text" disabled={user.accNum} value={user.accNum} name="accNum" className="form-control" onChange={this.credentials} />
+                                                                        <div className="form-group">
+                                                                            <label className="small mb-1" htmlFor="inputAccNumber">Acc Number</label>
+                                                                            <input id="accNum" type="text" disabled={user.accNum} defaultValue={user.accNum} name="accNum" className="form-control" onChange={this.credentials} />
                                                                         </div>
                                                                     </div>
                                                                 </div>}
@@ -537,10 +559,10 @@ class orderDetails extends Component {
                             {showSelectedItems && <div className="row justify-content-center">
                                 <div className="col-lg-12">
                                     <div className="card shadow-lg border-0 rounded-lg mt-3">
-                                        <div class="card-header">Selected Items</div>
-                                        <div class="card-body">
-                                            <div class="datatable">
-                                                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                                        <div className="card-header">Selected Items</div>
+                                        <div className="card-body">
+                                            <div className="datatable">
+                                                <table className="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                                                     <thead>
                                                         <tr>
                                                             <th>Items</th>
@@ -564,24 +586,24 @@ class orderDetails extends Component {
                                                         {selectedGroceryItems.length > 0 && selectedGroceryItems.map((item, key) => {
                                                             return (
                                                                 <tr key={key}>
-                                                                     <td>{item.particulars}</td>
-                                                                     <td>{item.category}</td>
-                                                                     <td>{item.subcategory}</td>
-                                                                     <span></span><input type="number" value={item.qty} id="quantity" /> <span></span>
-                                                                     <td>{item.unit}</td>
-                                                                     <td>{item.skuID}</td>
-                                                                     <td>{item.expdate}</td>
+                                                                    <td>{item.particulars}</td>
+                                                                    <td>{item.category}</td>
+                                                                    <td>{item.subcategory}</td>
+                                                                    <span></span><input type="number" value={item.qty} id="qty" onChange={(event) => this.handleQuantity(event, key)} /> <span></span>
+                                                                    <td>{item.unit}</td>
+                                                                    <td>{item.skuID}</td>
+                                                                    <td>{item.expdate}</td>
                                                                     <td>{item.barcode}</td>
                                                                     <td>{item.manufactureprice}</td>
                                                                     <td>{item.slp}</td>
                                                                     <td>{item.taxes}</td>
                                                                     <td>{item.hsncode}</td>
                                                                     <td>{item.remarks}</td>
-                                                                    <button>Update</button>
+                                                                    <button onClick={() => this.removeRow(key)}>Remove</button>
                                                                 </tr>
                                                             )
                                                         })}
-
+                                                        {selectedGroceryItems.length > 0 && <button onClick={this.submit}>Submit</button>}
                                                     </tbody>
                                                 </table>
                                             </div>
