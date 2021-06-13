@@ -103,11 +103,18 @@ class orderDetails extends Component {
     }
     /******************************Add action**********************************/
     addRecord(record) {
-        console.log(record)
         let { selectedGroceryItems } = this.state;
-        selectedGroceryItems.push(record);
-        this.setState({ selectedGroceryItems, showSelectedItems: true })
-        console.log(this.state.selectedGroceryItems)
+        let id = selectedGroceryItems.some((value) => {
+            return (value.id === record.id);
+        });
+        if (id === record.id.length > 1) {
+            this.alerts.snack(`Already selected this item`, 'bg-red');
+        }
+        else {
+            selectedGroceryItems.push(record);
+            this.setState({ selectedGroceryItems, showSelectedItems: true })
+        }
+
     }
     /**************************RadioButton action******************************/
     chooseType = (event) => {
@@ -335,12 +342,13 @@ class orderDetails extends Component {
         this.getAllItems();
     }
 
-    handleQuantity = (e, index) => {
-        if (e.target.value > 0) {
+    handleQuantity = (event, index) => {
+        if (event.target.value > 0) {
             const { selectedGroceryItems } = this.state;
             let newData = [...selectedGroceryItems];
-            newData[index].qty = e.target.value;
-            this.setState({ newData });
+            newData[index].qty = event.target.value;
+            this.setState({ selectedGroceryItems:newData });
+            console.log(event.target)  
         }
         else {
             this.alerts.snack(`Quantity Canot be less than one`, 'bg-red');
@@ -411,7 +419,7 @@ class orderDetails extends Component {
                                                 <div className="tab-pane fade show active" id="addUnit" role="tabpanel" aria-labelledby="addUnit-pill">
                                                     <div className="row">
                                                         <div className="col-md-12">
-                                                            <form id="new-unit" >
+                                                            <form id="customerList" >
                                                                 <div className="form-group">
                                                                     <select className="form-control" value={user.name} name="name" onChange={this.getCustomer}>
                                                                         <option value="null">--select--</option>
@@ -439,7 +447,7 @@ class orderDetails extends Component {
                                                     <div className="tab-pane fade show active" id="addUnit" role="tabpanel" aria-labelledby="addUnit-pill">
                                                         <div className="row">
                                                             <div className="col-md-12">
-                                                                <form id="new-unit" >
+                                                                <form id="vendorList" >
                                                                     <div className="form-group">
                                                                         <select className="form-control" value={user.name} name="name" onChange={this.getVendor}>
                                                                             <option value="null">--select--</option>
@@ -556,13 +564,13 @@ class orderDetails extends Component {
                                     </div>
                                 </div>
                             </div>
-                            {showSelectedItems && <div className="row justify-content-center">
+                            {showSelectedItems && selectedGroceryItems.length > 0 && <div className="row justify-content-center">
                                 <div className="col-lg-12">
                                     <div className="card shadow-lg border-0 rounded-lg mt-3">
                                         <div className="card-header">Selected Items</div>
                                         <div className="card-body">
                                             <div className="datatable">
-                                                <table className="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                                                <table className="table table-bordered table-hover" id="dataTable" width="100%" cellSpacing="0">
                                                     <thead>
                                                         <tr>
                                                             <th>Items</th>
@@ -589,7 +597,7 @@ class orderDetails extends Component {
                                                                     <td>{item.particulars}</td>
                                                                     <td>{item.category}</td>
                                                                     <td>{item.subcategory}</td>
-                                                                    <span></span><input type="number" value={item.qty} id="qty" onChange={(event) => this.handleQuantity(event, key)} /> <span></span>
+                                                                    <th><input type="number" value={item.qty} id="qty" onChange={(event) => this.handleQuantity(event, key)} /> </th>
                                                                     <td>{item.unit}</td>
                                                                     <td>{item.skuID}</td>
                                                                     <td>{item.expdate}</td>
@@ -599,11 +607,11 @@ class orderDetails extends Component {
                                                                     <td>{item.taxes}</td>
                                                                     <td>{item.hsncode}</td>
                                                                     <td>{item.remarks}</td>
-                                                                    <button onClick={() => this.removeRow(key)}>Remove</button>
+                                                                    <th><button onClick={() => this.removeRow(key)}>Remove</button></th>
                                                                 </tr>
                                                             )
                                                         })}
-                                                        {selectedGroceryItems.length > 0 && <button onClick={this.submit}>Submit</button>}
+                                                         <tr><th>{selectedGroceryItems.length > 0 && <button onClick={this.submit}>Submit</button>}</th></tr>
                                                     </tbody>
                                                 </table>
                                             </div>
